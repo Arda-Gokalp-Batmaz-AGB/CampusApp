@@ -29,21 +29,16 @@ jobs:
         run: bash ./gradlew assembleDebug --stacktrace  
       - name: Find APK
         run: cd build | ls 
+  upload-apk:
+    name: Upload APK
+    needs: build-apk
+    runs-on: ubuntu-latest
+    steps:
       - name: Upload APK
         uses: actions/upload-artifact@v2
         with:
           name: apk
-          path: Client/CampusLink/app/build/outputs/apk/debug/app-debug.apk
-  upload-apk:
-    name: Upload APK2
-    needs: build-apk
-    runs-on: ubuntu-latest
-    steps:
-      - name: Upload APK2
-        uses: actions/upload-artifact@v2
-        with:
-          name: apk
-          path: Client/CampusLink/app/build/outputs/apk/debug/app-debug.apk
+          path: Client/CampusLink
           
 #   release:
 #     name: Release APK
