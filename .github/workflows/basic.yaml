@@ -26,7 +26,7 @@ jobs:
       - name: Build gradle project
         run: ./gradlew build
       - name: Build APK
-        run: bash ./gradlew assembleDebug --stacktrace | ls | cd build | ls
+        run: bash ./gradlew assembleDebug --stacktrace | cd build | ls
           
   upload-apk:
     name: Upload APK
