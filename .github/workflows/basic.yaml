@@ -19,7 +19,7 @@ jobs:
         with:
           java-version: 1.8
       - name: Go App
-        run: cd Client/CampusLink 
+        run: cd ./Client/CampusLink 
       - name: List files
         run: ls
   apk:
