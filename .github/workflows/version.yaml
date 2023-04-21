@@ -1,0 +1,33 @@
+name: version
+on:
+  push:
+    branches:
+      - Dev
+
+
+jobs:  
+  version:
+    name: Create Version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Git Semantic Version
+        id: semantic_version
+        uses: PaulHatch/semantic-version@v5.0.2
+        with:
+          short_tags: true
+          tag_prefix: ""
+          format: "${major}.${minor}.${patch}"
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.semantic_version.outputs.version }}
+          release_name: ${{ steps.semantic_version.outputs.version }}
+          draft: false
+          prerelease: false
