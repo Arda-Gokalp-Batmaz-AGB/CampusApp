@@ -21,7 +21,10 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           cache: gradle
-          
+        
+      - name: Open Client Directory
+        run: cd Client/CampusLink
+        
       - name: Generate AAR and APK files
         if: always()
         run: ./gradlew assembleDebug
