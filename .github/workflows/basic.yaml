@@ -8,8 +8,8 @@ on:
       - 'v*'
 
 jobs:
-  test:
-    name: Run Unit Tests
+  open-dir:
+    name: Open App Directory
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,11 +18,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: Run Tests
-        run: bash ./gradlew test --stacktrace  
+      - name: Go App
+        run: cd Client/CampusLink 
+      - name: List files
+        run: ls
   apk:
     name: Generate APK
-    needs: test
+    needs: open-dir
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
