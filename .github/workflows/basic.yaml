@@ -50,11 +50,9 @@ jobs:
         uses: PaulHatch/semantic-version@v5.0.2
         with:
           short_tags: true
-          tag_prefix: ""
-          format: "v${major}.${minor}.${patch}"
-          
-       
-       
+          tag_prefix: "v"
+          format: "${major}.${minor}.${patch}"
+      
        
       - name: Download APK from build
         uses: actions/download-artifact@v1
