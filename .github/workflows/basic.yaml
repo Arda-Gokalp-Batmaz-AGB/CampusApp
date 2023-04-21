@@ -53,6 +53,7 @@ jobs:
           tag_prefix: ""
           format: "v${major}.${minor}.${patch}"
       
+      
       - name: Download APK from build
         uses: actions/download-artifact@v1
         with:
