@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - Dev
-    tags:
-      - 'v*'
 jobs:
     generate_version:
      name: Generate Version
