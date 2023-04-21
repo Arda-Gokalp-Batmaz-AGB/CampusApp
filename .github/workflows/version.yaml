@@ -1,0 +1,20 @@
+name: version
+on:
+  push:
+    branches:
+      - dev
+    tags:
+      - 'v*'
+    steps:
+      - name: Checkout  
+        uses: actions/checkout@v2  
+        with:  
+            fetch-depth: 0  
+
+      - name: Version  
+        id: version  
+        uses: juliansangillo/tag-version@v1  
+        with:  
+            production-branch: master  
+            test-branch: test  
+            dev-branch: develop  
