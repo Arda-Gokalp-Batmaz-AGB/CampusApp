@@ -33,7 +33,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: apk
-          path: Client/CampusLink/app/build/intermediates/apk/debug/app-debug.apk
+          path: Client/CampusLink/app/build/outputs/apk/debug/app-debug.apk
   upload-apk:
     name: Upload APK2
     needs: build-apk
@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: apk
-          path: Client/CampusLink/app/build/intermediates/apk/debug/app-debug.apk
+          path: Client/CampusLink/app/build/outputs/apk/debug/app-debug.apk
           
 #   release:
 #     name: Release APK
