@@ -19,5 +19,5 @@ jobs:
         id: version  
         uses: juliansangillo/tag-version@v1  
         with:  
-            production-branch: main  
+            production-branch: Dev  
             dev-branch: Dev  
