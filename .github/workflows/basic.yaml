@@ -21,6 +21,19 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+                
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Git Semantic Version
+        id: semantic_version
+        uses: PaulHatch/semantic-version@v5.0.2
+        with:
+          short_tags: true
+          tag_prefix: ""
+          format: "${major}.${minor}.${patch}"
+          
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
       - name: Build gradle project
@@ -43,18 +56,7 @@ jobs:
         uses: actions/download-artifact@v1
         with:
           name: apk  
-          
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Git Semantic Version
-        id: semantic_version
-        uses: PaulHatch/semantic-version@v5.0.2
-        with:
-          short_tags: true
-          tag_prefix: ""
-          format: "${major}.${minor}.${patch}"
+
           
        
        
