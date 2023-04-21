@@ -1,0 +1,24 @@
+name: version
+on:
+  push:
+    branches:
+      - Dev
+    tags:
+      - 'v*'
+jobs:
+    generate_version:
+     name: Generate APK
+     runs-on: ubuntu-latest
+     steps:
+      - name: Checkout  
+        uses: actions/checkout@v2  
+        with:  
+            fetch-depth: 0  
+
+      - name: Version  
+        id: version  
+        uses: juliansangillo/tag-version@v1  
+        with:  
+            production-branch: master  
+            test-branch: test  
+            dev-branch: develop  
