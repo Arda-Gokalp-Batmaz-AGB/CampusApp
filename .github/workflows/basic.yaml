@@ -24,11 +24,10 @@ jobs:
       - name: Update Google Services JSON file
         working-directory: ./Client/CampusLink/app
         run: |
-          ls
           touch google-services.json
           cat google-services.json | base64
           ls
-          echo $GOOGLE_SERVICES_JSON | base64 -di > google-services.json
+          echo $GOOGLE_SERVICES_JSON > google-services.json
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
