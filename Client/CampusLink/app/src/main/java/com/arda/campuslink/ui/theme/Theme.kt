@@ -6,25 +6,22 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
-private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+private val DarkColorPalette = lightColors(
+    primary = Purple500,
+    primaryVariant = Teal300,
+    secondary = nightTextColor,
+    background = bgColor,
+    secondaryVariant = Purple800,
+    error = errorColor
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    primary = clickableColorLight,
+    primaryVariant = Teal300,
+    secondary = lightTextColor,
+    background = bgColor2,
+    secondaryVariant = clickableColorLight,
+    error = errorColor
 )
 
 @Composable
@@ -37,7 +34,7 @@ fun CampusLinkTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Compos
 
     MaterialTheme(
         colors = colors,
-        typography = Typography,
+        typography = androidx.compose.material.Typography(),
         shapes = Shapes,
         content = content
     )
