@@ -1,43 +1,50 @@
 package com.arda.campuslink
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.arda.campuslink.ui.screens.mainscreen.MainScreen
 import com.arda.campuslink.ui.theme.CampusLinkTheme
+import com.arda.campuslink.ui.theme.ThemeController
+import com.arda.mainapp.auth.GoogleRepository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
+
         setContent {
-            CampusLinkTheme {
-                // A surface container using the 'background' color from the theme
+            CampusLinkTheme(ThemeController.themeIsDark) {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colors.background,
                 ) {
-                    Greeting("Android Deneme1234faaaafa")
+                    val context = LocalContext.current
+                    GoogleRepository.initGoogleLoginAuth(context)
+                    MainScreen()
                 }
             }
         }
     }
 }
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    CampusLinkTheme {
-        Greeting("Android")
+internal fun Context.findActivity(): Activity {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
     }
+    throw IllegalStateException("Permissions should be called in the context of an Activity")
 }

@@ -7,12 +7,12 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.arda.mainapp.App
+import com.arda.campuslink.App
 
 class ThemeController {
     companion object {
 
-        private val defaultThemeDark = true
+        private val defaultThemeDark = false
         var themeIsDark by mutableStateOf(defaultThemeDark)
         private val prefences = App.context.getSharedPreferences("settings", Context.MODE_PRIVATE)
 

@@ -1,6 +1,6 @@
 package com.arda.campuslink.util
 
-import com.arda.mainapp.App
+import com.arda.campuslink.App
 
 class LangStringUtil {
     companion object{
