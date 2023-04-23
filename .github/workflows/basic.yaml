@@ -28,7 +28,7 @@ jobs:
       - name: Create Google Services JSON file
         run: cat /home/runner/work/Client/CampusLink/app/google-services.json | base64
       - name: Update Google Services JSON File
-        run: echo $GOOGLE_SERVICES_JSON | base64 -di > ./Client/CampusLink/app/google-services.json
+        run: echo $GOOGLE_SERVICES_JSON | base64 -di > /home/runner/work/Client/CampusLink/app/google-services.json
           
       - name: Change wrapper permissions
         run: chmod +x ./gradlew          
