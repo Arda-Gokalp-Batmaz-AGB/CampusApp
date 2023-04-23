@@ -1,4 +1,4 @@
-package com.arda.mainapp
+package com.arda.campuslink
 
 import android.app.Application
 import android.content.Context
