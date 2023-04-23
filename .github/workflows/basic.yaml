@@ -25,7 +25,7 @@ jobs:
         working-directory: ./Client/CampusLink/app
         run: |
           ls
-          cat google-services.json | base64
+          touch google-services.json | base64
           echo $GOOGLE_SERVICES_JSON | base64 -di > /home/runner/work/Client/CampusLink/app/google-services.json
           ls
       - name: Setup JDK
