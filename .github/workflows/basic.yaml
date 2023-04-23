@@ -26,8 +26,8 @@ jobs:
         run: |
           ls
           touch google-services.json | base64
-          echo $GOOGLE_SERVICES_JSON | base64 -di > /home/runner/work/Client/CampusLink/app/google-services.json
           ls
+          echo $GOOGLE_SERVICES_JSON | base64 -di > google-services.json
       - name: Setup JDK
         uses: actions/setup-java@v1
         with:
