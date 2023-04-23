@@ -18,7 +18,7 @@ fun NavGraph(
     val initialRoute : String
     if(authViewModel.currentUser != null)
     {
-        initialRoute = NavigationScreen.Login.route
+        initialRoute = NavigationScreen.Home.route
     }
     else
     {

@@ -13,7 +13,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.arda.campuslink.ui.screens.mainscreen.MainScreen
 import com.arda.campuslink.ui.theme.CampusLinkTheme
 import com.arda.campuslink.ui.theme.ThemeController
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
-
+        installSplashScreen()
         setContent {
             CampusLinkTheme(ThemeController.themeIsDark) {
                 Surface(
