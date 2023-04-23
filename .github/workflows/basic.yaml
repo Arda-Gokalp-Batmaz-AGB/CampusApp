@@ -20,11 +20,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Setup JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-          
+
       - name: Update Google Services JSON file
         working-directory: ./Client/CampusLink/app
         run: |
@@ -32,6 +28,10 @@ jobs:
           cat google-services.json | base64
           echo $GOOGLE_SERVICES_JSON | base64 -di > /home/runner/work/Client/CampusLink/app/google-services.json
           ls
+      - name: Setup JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
           
       - name: Change wrapper permissions
         run: chmod +x ./gradlew          
