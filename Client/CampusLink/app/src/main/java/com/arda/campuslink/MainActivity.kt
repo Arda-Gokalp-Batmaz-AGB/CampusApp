@@ -17,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.arda.campuslink.ui.screens.mainscreen.MainScreen
 import com.arda.campuslink.ui.theme.CampusLinkTheme
 import com.arda.campuslink.ui.theme.ThemeController
-import com.arda.mainapp.auth.GoogleRepository
+import com.arda.campuslink.util.GoogleOneTapClient
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background,
                 ) {
                     val context = LocalContext.current
-                    GoogleRepository.initGoogleLoginAuth(context)
+                    GoogleOneTapClient.initGoogleLoginAuth(context)
                     MainScreen()
                 }
             }

@@ -2,7 +2,6 @@ package com.arda.campuslink.ui.auth
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -36,15 +35,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraph
 import com.arda.campuslink.ui.theme.CampusLinkTheme
 import com.arda.campuslink.ui.theme.ThemeController
 import com.arda.campuslink.util.LangStringUtil
 import com.arda.campuslink.R
-import com.arda.campuslink.findActivity
 import com.arda.campuslink.ui.navigation.NavigationScreen
 import com.arda.campuslink.util.DebugTags
-import com.arda.mainapp.auth.GoogleRepository
+import com.arda.campuslink.util.GoogleOneTapClient
 import com.arda.mainapp.auth.Resource
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -318,7 +315,7 @@ fun loginWithGoogle(model: AuthViewModel) {
         }
     Button(
         onClick = {
-            startForResult.launch(GoogleRepository.getOneTapClient().signInIntent)
+            startForResult.launch(GoogleOneTapClient.getOneTapClient().signInIntent)
         },
         modifier = Modifier
             .width(300.dp),

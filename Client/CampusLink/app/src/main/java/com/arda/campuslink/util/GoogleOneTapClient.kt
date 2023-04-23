@@ -1,4 +1,4 @@
-package com.arda.mainapp.auth
+package com.arda.campuslink.util
 
 import android.content.Context
 import android.util.Log
@@ -6,7 +6,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 
-object GoogleRepository {
+object GoogleOneTapClient {
     private val token = "371251571405-96253fid7q9hd88l9sjlsk91ar23a490.apps.googleusercontent.com"
 
     private lateinit var oneTapClient: GoogleSignInClient

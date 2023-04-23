@@ -2,7 +2,7 @@ package com.arda.campuslink.data.repository
 
 import android.util.Log
 import com.arda.campuslink.domain.repository.AuthRepository
-import com.arda.mainapp.auth.GoogleRepository
+import com.arda.campuslink.util.GoogleOneTapClient
 import com.arda.mainapp.auth.Resource
 import com.arda.mainapp.auth.utils.await
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -66,7 +66,7 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override fun logout() {
-        GoogleRepository.getOneTapClient().signOut()
+        GoogleOneTapClient.getOneTapClient().signOut()
         auth.signOut()
     }
 }
