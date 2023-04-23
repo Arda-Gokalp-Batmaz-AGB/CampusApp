@@ -23,6 +23,12 @@ jobs:
           java-version: 11
       - name: Change wrapper permissions
         run: chmod +x ./gradlew
+      - name: Create Google Services JSON File
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          run: echo $GOOGLE_SERVICES_JSON | base64 -di > ./Client/CampusLink/app/google-services.json
+          
+        
       - name: Build gradle project
         run: ./gradlew build
       - name: Build APK
