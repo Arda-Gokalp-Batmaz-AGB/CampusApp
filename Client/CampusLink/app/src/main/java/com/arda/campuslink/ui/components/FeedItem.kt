@@ -182,11 +182,7 @@ fun PostTextAndImage(modifier: Modifier = Modifier, linkedinPost: LinkedinPost) 
             style = TextStyle(fontSize = 12.sp),
             modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
         )
-//        Text(
-//            text = linkedinPost.description,
-//            color = Black,
-//            style = TextStyle(fontSize = 12.sp), modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
-//        )
+
         if (linkedinPost.image != null) {
             Image(
                 contentScale = ContentScale.FillWidth,
@@ -235,7 +231,9 @@ fun PostOptions(modifier: Modifier = Modifier, linkedinPost: LinkedinPost) {
 @Composable
 private fun PostItem(title: String, icon: ImageVector) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { //TO-DO Make them interactive
+             }
     ) {
         Icon(
             icon,
@@ -277,9 +275,10 @@ fun LikesReactions(modifier: Modifier = Modifier, icons: List<ImageVector>, link
             )
         }
         Row {
-            if (linkedinPost.likes != 0) {
+            if (linkedinPost.comments != 0) {
                 Text(
-                    text = "${linkedinPost.likes} comentário" + getLikesOrCommentsString(
+                    text = "${linkedinPost.comments} ${LangStringUtil.getLangString(R.string.comment)}"
+                            + getLikesOrCommentsString(
                         linkedinPost.likes
                     ),
                     color = Color.DarkGray,
@@ -290,10 +289,11 @@ fun LikesReactions(modifier: Modifier = Modifier, icons: List<ImageVector>, link
                 text = " • ", color = Color.DarkGray,
                 style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
             )
-            if (linkedinPost.comments != 0) {
+            if (linkedinPost.sharings != 0) {
                 Text(
-                    text = "${linkedinPost.comments} compartilhamento" + getLikesOrCommentsString(
-                        linkedinPost.comments
+                    text = "${linkedinPost.sharings} ${LangStringUtil.getLangString(R.string.Share)}"
+                            + getLikesOrCommentsString(
+                        linkedinPost.sharings
                     ), color = Color.DarkGray,
                     style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 )
