@@ -33,6 +33,8 @@ import androidx.navigation.NavController
 import com.arda.campuslink.data.model.LinkedinPost
 import kotlinx.coroutines.CoroutineScope
 import com.arda.campuslink.R
+import com.arda.campuslink.util.LangStringUtil
+
 @Composable
 fun FeedItem(
     linkedinPost: LinkedinPost,
@@ -97,7 +99,10 @@ fun PostTopItem(
     navController: NavController
 ) {
     Row(
-        modifier = modifier.padding(top = 8.dp),
+        modifier = modifier.padding(top = 8.dp)
+            .clickable {
+                //To-DO Go Profile
+            },
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
@@ -115,7 +120,7 @@ fun PostTopItem(
             Column {
                 Text(
                     color = Black,
-                    text = "${linkedinPost.user.name} • 2º",
+                    text = "${linkedinPost.user.name}",
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 )
                 Text(
@@ -147,16 +152,19 @@ fun PostTopItem(
 @Composable
 private fun FollowButton(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.padding(end= 8.dp, top = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier = modifier.padding(end= 8.dp, top = 8.dp)
+            .clickable {
+                       //To-DO Follow
+            },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.logo),
+            Icons.Filled.Add,
             contentDescription = "",
             tint = Blue
         )
         Text(
-            text = "Seguir",
+            text = LangStringUtil.getLangString(R.string.follow),
             color = Blue,
             style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold)
         )
@@ -169,11 +177,16 @@ fun PostTextAndImage(modifier: Modifier = Modifier, linkedinPost: LinkedinPost) 
         modifier = modifier,
         horizontalAlignment = Alignment.Start
     ) {
-        Text(
+        ExpandableText(
             text = linkedinPost.description,
-            color = Black,
-            style = TextStyle(fontSize = 12.sp), modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
+            style = TextStyle(fontSize = 12.sp),
+            modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
         )
+//        Text(
+//            text = linkedinPost.description,
+//            color = Black,
+//            style = TextStyle(fontSize = 12.sp), modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
+//        )
         if (linkedinPost.image != null) {
             Image(
                 contentScale = ContentScale.FillWidth,
@@ -211,10 +224,10 @@ fun PostOptions(modifier: Modifier = Modifier, linkedinPost: LinkedinPost) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            PostItem("Gostei", Icons.Filled.ThumbUp)
-            PostItem("Comentar", Icons.Filled.Comment)
-            PostItem("Compartilhar", Icons.Filled.Share)
-            PostItem("Enviar", Icons.Filled.Send)
+            PostItem(LangStringUtil.getLangString(R.string.like), Icons.Filled.ThumbUp)
+            PostItem(LangStringUtil.getLangString(R.string.comment), Icons.Filled.Comment)
+            PostItem(LangStringUtil.getLangString(R.string.Share), Icons.Filled.Share)
+            PostItem(LangStringUtil.getLangString(R.string.Send), Icons.Filled.Send)
         }
     }
 }

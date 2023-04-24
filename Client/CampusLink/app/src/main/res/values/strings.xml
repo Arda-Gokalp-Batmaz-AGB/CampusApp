@@ -11,6 +11,11 @@
     <string name="publish">Publish</string>
     <string name="notifications">Notifications</string>
     <string name="jobpostings">Openings</string>
+    <string name="follow">Follow</string>
+    <string name="like">Like</string>
+    <string name="comment">Comment</string>
+    <string name="Share">Share</string>
+    <string name="Send">Send</string>
     <string name="potential_answers">Potential \nAnswers</string>
     <string name="all_answers">All \nAnswers</string>
     <string name="found">Found</string>
