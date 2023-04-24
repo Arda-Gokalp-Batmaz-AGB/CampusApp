@@ -7,6 +7,10 @@
     <string name="profile">Profile</string>
     <string name="stats">Stats</string>
     <string name="speak">Speak</string>
+    <string name="mynetwork">My Network</string>
+    <string name="publish">Publish</string>
+    <string name="notifications">Notifications</string>
+    <string name="jobpostings">Openings</string>
     <string name="potential_answers">Potential \nAnswers</string>
     <string name="all_answers">All \nAnswers</string>
     <string name="found">Found</string>

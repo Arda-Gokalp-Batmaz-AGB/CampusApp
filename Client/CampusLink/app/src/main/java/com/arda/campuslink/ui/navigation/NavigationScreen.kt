@@ -33,6 +33,42 @@ sealed class NavigationScreen(
                 return LangStringUtil.getLangString(R.string.login)
             }
     }
+    object MyNetwork : NavigationScreen(
+        route = "mynetwork",
+        icon = Icons.Filled.Group
+    ) {
+        override val title: String
+            get() {
+                return LangStringUtil.getLangString(R.string.mynetwork)
+            }
+    }
+    object Publish : NavigationScreen(
+        route = "publish",
+        icon = Icons.Filled.AddBox
+    ) {
+        override val title: String
+            get() {
+                return LangStringUtil.getLangString(R.string.publish)
+            }
+    }
+    object Notifications : NavigationScreen(
+        route = "notifications",
+        icon = Icons.Filled.Notifications
+    ) {
+        override val title: String
+            get() {
+                return LangStringUtil.getLangString(R.string.notifications)
+            }
+    }
+    object JobPostings : NavigationScreen(
+        route = "jobpostings",
+        icon = Icons.Filled.Work
+    ) {
+        override val title: String
+            get() {
+                return LangStringUtil.getLangString(R.string.jobpostings)
+            }
+    }
     object Profile : NavigationScreen(
         route = "profile",
         icon = Icons.Filled.Person4
@@ -40,16 +76,6 @@ sealed class NavigationScreen(
         override val title: String
             get() {
                 return LangStringUtil.getLangString(R.string.profile)
-            }
-    }
-
-    object Stats : NavigationScreen(
-        route = "stats",
-        icon = Icons.Filled.Monitor
-    ) {
-        override val title: String
-            get() {
-                return LangStringUtil.getLangString(R.string.stats)
             }
     }
 }
