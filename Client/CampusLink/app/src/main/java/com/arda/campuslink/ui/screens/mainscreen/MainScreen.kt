@@ -5,7 +5,13 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -14,6 +20,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.arda.campuslink.ui.auth.AuthViewModel
+import com.arda.campuslink.ui.components.AppDrawer
+import com.arda.campuslink.ui.components.TopBar
 import com.arda.campuslink.ui.navigation.NavGraph
 import com.arda.campuslink.ui.navigation.NavigationScreen
 
@@ -23,7 +31,16 @@ fun MainScreen() {
     val mContext = LocalContext.current
     val authViewmodel = hiltViewModel<AuthViewModel>()
     val navController = rememberNavController()
+    val state = rememberScaffoldState()
+    val scope = rememberCoroutineScope()
     Scaffold(
+        scaffoldState = state,
+        drawerContent = {
+            AppDrawer()
+        },
+        topBar = {
+            TopBar(scope,state)
+        },
         bottomBar = {
             if (navController.currentBackStackEntryAsState().value?.destination?.route.toString() != NavigationScreen.Login.route
             ) {
@@ -32,10 +49,11 @@ fun MainScreen() {
         }
     )
     {
-
         NavGraph(
             authViewmodel,
-            navController = navController
+            navController = navController,
+            state,
+            scope
         )
     }
 }
@@ -45,12 +63,15 @@ fun MainScreen() {
 fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         NavigationScreen.Home,
-        NavigationScreen.Profile,
+        NavigationScreen.MyNetwork,
+        NavigationScreen.Publish,
+        NavigationScreen.Notifications,
+        NavigationScreen.JobPostings,
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    BottomNavigation {
+    BottomNavigation() {
         screens.forEach { screen ->
             AddItem(
                 screen = screen,
@@ -71,7 +92,14 @@ fun RowScope.AddItem(
     BottomNavigationItem(
 
         label = {
-            Text(text = screen.title)
+            Text(
+                text = screen.title,
+                color = MaterialTheme.colors.secondary,
+                softWrap = false,
+                fontSize = 8.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center,
+            )
         },
         icon = {
             Icon(
