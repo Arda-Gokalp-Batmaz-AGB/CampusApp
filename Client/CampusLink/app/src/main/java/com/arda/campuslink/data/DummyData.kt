@@ -6,8 +6,8 @@ import com.arda.campuslink.data.model.User
 
 val dummyUserData: List<User> = listOf(
     User(
-        name = "Geovani Amaral",
-        jobTitle = "Desenvolvedor Android",
+        name = "Arda Gökalp Batmaz",
+        jobTitle = "Öğrenci",
         avatar = R.drawable.logo,
         banner = R.drawable.logo,
     ),

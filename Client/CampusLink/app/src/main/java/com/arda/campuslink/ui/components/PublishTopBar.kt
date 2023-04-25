@@ -27,7 +27,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PublishTopBar(openDialog: MutableState<Boolean>,navController: NavHostController) {
     TopAppBar(
-        backgroundColor = Color.White,
+        backgroundColor =MaterialTheme.colors.background,
         elevation = 5.dp,
     ) {
         Row(
