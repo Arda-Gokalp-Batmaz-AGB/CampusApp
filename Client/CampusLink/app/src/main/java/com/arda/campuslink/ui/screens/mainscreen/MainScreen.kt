@@ -1,10 +1,7 @@
 package com.arda.campuslink.ui.screens.mainscreen
 
 import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontWeight
@@ -18,11 +15,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.arda.campuslink.ui.auth.AuthViewModel
-import com.arda.campuslink.ui.components.AppDrawer
+import com.arda.campuslink.ui.components.LeftBarPopUp
 import com.arda.campuslink.ui.components.TopBar
 import com.arda.campuslink.ui.navigation.NavGraph
 import com.arda.campuslink.ui.navigation.NavigationScreen
-import com.arda.campuslink.util.DebugTags
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
@@ -34,7 +30,7 @@ fun MainScreen() {
     Scaffold(
         scaffoldState = state,
         drawerContent = {
-            AppDrawer()
+            LeftBarPopUp()
         },
         topBar = {
             TopBar(scope, state)
