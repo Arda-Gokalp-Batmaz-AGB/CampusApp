@@ -18,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
+import coil.compose.rememberImagePainter
 import com.arda.campuslink.R
 import com.arda.campuslink.data.dummyUserData
 import com.arda.campuslink.ui.components.PublishTopBar
@@ -95,7 +97,7 @@ fun postTopArea() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = painterResource(id = dummyUserData[0].avatar),
+            painter = rememberImagePainter(dummyUserData[0].avatar),
             contentDescription = "",
             modifier = Modifier
                 .padding(start = 8.dp)
@@ -110,7 +112,7 @@ fun postTopArea() {
             Column {
                 Text(
                     color = Color.Black,
-                    text = "${dummyUserData[0].name}",
+                    text = "${dummyUserData[0].userName}",
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 )
             }

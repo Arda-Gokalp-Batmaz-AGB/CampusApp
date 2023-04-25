@@ -3,19 +3,18 @@ package com.arda.campuslink.data
 import com.arda.campuslink.R
 import com.arda.campuslink.domain.model.LinkedinPost
 import com.arda.campuslink.domain.model.User
+import com.arda.campuslink.util.ImageProcessUtils
 
 val dummyUserData: List<User> = listOf(
     User(
-        name = "Arda Gökalp Batmaz",
+        userName = "Batmaz",
         jobTitle = "Öğrenci",
-        avatar = R.drawable.logo,
-        banner = R.drawable.logo,
+        avatar = ImageProcessUtils.convertBitmapToUri(ImageProcessUtils.getBitmapFromImage(R.drawable.logo)),
     ),
     User(
-        name = "Android Developers",
+        userName = "Android Developers",
         jobTitle = "54.714 seguidores",
-        avatar = R.drawable.logo,
-        banner = R.drawable.logo,
+        avatar =  ImageProcessUtils.convertBitmapToUri(ImageProcessUtils.getBitmapFromImage(R.drawable.logo)),
     )
 )
 
