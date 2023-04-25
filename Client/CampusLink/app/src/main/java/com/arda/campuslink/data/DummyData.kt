@@ -1,8 +1,8 @@
 package com.arda.campuslink.data
 
 import com.arda.campuslink.R
-import com.arda.campuslink.data.model.LinkedinPost
-import com.arda.campuslink.data.model.User
+import com.arda.campuslink.domain.model.LinkedinPost
+import com.arda.campuslink.domain.model.User
 
 val dummyUserData: List<User> = listOf(
     User(

@@ -1,4 +1,4 @@
-package com.arda.campuslink.data.model
+package com.arda.campuslink.domain.model
 
 import java.util.*
 

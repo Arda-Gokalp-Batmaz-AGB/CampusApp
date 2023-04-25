@@ -1,4 +1,4 @@
-package com.arda.campuslink.data.model
+package com.arda.campuslink.domain.model
 
 data class User(
     val name: String,

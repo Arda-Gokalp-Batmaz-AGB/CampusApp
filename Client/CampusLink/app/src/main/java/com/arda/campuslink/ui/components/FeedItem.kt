@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
-import com.arda.campuslink.data.model.LinkedinPost
+import com.arda.campuslink.domain.model.LinkedinPost
 import kotlinx.coroutines.CoroutineScope
 import com.arda.campuslink.R
 import com.arda.campuslink.util.LangStringUtil
