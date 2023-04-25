@@ -1,10 +1,9 @@
 package com.arda.campuslink.ui.navigation
 
 import android.util.Log
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ScaffoldState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,20 +23,17 @@ fun NavGraph(
     authViewModel: AuthViewModel,
     navController: NavHostController,
     scaffoldState: ScaffoldState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) {
-    val initialRoute : String
-    if(authViewModel.currentUser != null)
-    {
+    val initialRoute: String
+    if (authViewModel.currentUser != null) {
         initialRoute = NavigationScreen.Home.route
-    }
-    else
-    {
+    } else {
         initialRoute = NavigationScreen.Login.route
     }
 
 
-    Log.v(DebugTags.UITag.tag,"Test: " + initialRoute)
+    Log.v(DebugTags.UITag.tag, "Test: " + initialRoute)
     NavHost(
         navController = navController,
         startDestination = initialRoute
@@ -45,11 +41,14 @@ fun NavGraph(
     {
         composable(route = NavigationScreen.Login.route)
         {
-            authMainLayout(navController=navController)
+            authMainLayout(navController = navController)
         }
         composable(route = NavigationScreen.Home.route)
         {
-          HomeScreen(navController = navController, scaffoldState = scaffoldState, coroutineScope = coroutineScope)
+            HomeScreen(
+                navController = navController,
+                coroutineScope = coroutineScope,
+            )
         }
         composable(route = NavigationScreen.MyNetwork.route)
         {
@@ -69,7 +68,7 @@ fun NavGraph(
         }
         composable(route = NavigationScreen.Profile.route)
         {
-           ProfileScreen(navController)
+            ProfileScreen(navController)
         }
     }
 }

@@ -2,6 +2,7 @@ package com.arda.campuslink.ui.screens.homescreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,12 +14,15 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun HomeScreen(
     navController: NavController,
-    scaffoldState: ScaffoldState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
 ) {
-    Box() {
+    Box(
+        Modifier
+
+    ) {
         LazyColumn(
-            modifier = Modifier
+            modifier = Modifier,
+            //state = scrollState
         )
         {
             items(dummyFeedData.size) { idx ->

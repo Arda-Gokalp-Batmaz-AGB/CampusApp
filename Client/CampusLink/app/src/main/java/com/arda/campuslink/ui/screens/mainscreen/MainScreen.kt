@@ -1,16 +1,14 @@
 package com.arda.campuslink.ui.screens.mainscreen
 
 import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination
@@ -24,11 +22,11 @@ import com.arda.campuslink.ui.components.AppDrawer
 import com.arda.campuslink.ui.components.TopBar
 import com.arda.campuslink.ui.navigation.NavGraph
 import com.arda.campuslink.ui.navigation.NavigationScreen
+import com.arda.campuslink.util.DebugTags
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
-    val mContext = LocalContext.current
     val authViewmodel = hiltViewModel<AuthViewModel>()
     val navController = rememberNavController()
     val state = rememberScaffoldState()
@@ -39,10 +37,11 @@ fun MainScreen() {
             AppDrawer()
         },
         topBar = {
-            TopBar(scope,state)
+            TopBar(scope, state)
         },
         bottomBar = {
-            if (navController.currentBackStackEntryAsState().value?.destination?.route.toString() != NavigationScreen.Login.route
+            if ((navController.currentBackStackEntryAsState().value?.destination?.route.toString()
+                        != NavigationScreen.Login.route)
             ) {
                 BottomBar(navController = navController)
             }
@@ -53,7 +52,7 @@ fun MainScreen() {
             authViewmodel,
             navController = navController,
             state,
-            scope
+            scope,
         )
     }
 }
