@@ -1,4 +1,11 @@
 package com.arda.campuslink.domain.usecase
 
-class CreatePostUseCase {
+import com.arda.campuslink.domain.repository.AuthRepository
+import javax.inject.Inject
+
+class CreatePostUseCase @Inject constructor(
+//    private val loggedUserUseCase: LoggedUserUseCase
+)
+{
+
 }

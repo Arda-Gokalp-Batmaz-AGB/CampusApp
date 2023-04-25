@@ -1,4 +1,34 @@
 package com.arda.campuslink.domain.usecase
 
-class LoggedUserUseCase {
+import com.arda.campuslink.domain.model.User
+import com.arda.campuslink.domain.model.ExtendedUser
+import com.arda.campuslink.domain.repository.UserRepository
+import com.arda.campuslink.util.ImageProcessUtils
+import com.arda.mainapp.auth.Resource
+import javax.inject.Inject
+
+
+class LoggedUserUseCase @Inject constructor(
+    private val userRepository: UserRepository,
+
+    ) {
+    suspend fun getDetailedUserProfile(userId: String): Resource<ExtendedUser> {
+        if (userRepository.currentUser != null) {
+            return Resource.Sucess(userRepository.currentUser!!)
+        } else {
+            return userRepository.getDetailedUserInfo(userId)
+        }
+    }
+
+    fun getMinProfileOfCurrentUser(): User {
+        return User(
+            userRepository.currentFirebaseUser!!.displayName!!,
+            "",
+           userRepository.currentFirebaseUser!!.photoUrl!!
+        )
+    }
+
+    suspend fun getMinimizedUserProfile(userId: String): Resource<User> {
+        return userRepository.getMinimizedUserInfo(userId)
+    }
 }

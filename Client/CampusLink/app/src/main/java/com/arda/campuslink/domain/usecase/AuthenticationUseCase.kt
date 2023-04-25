@@ -8,7 +8,7 @@ import com.google.firebase.auth.FirebaseUser
 import javax.inject.Inject
 
 class AuthenticationUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
 )
 {
 
