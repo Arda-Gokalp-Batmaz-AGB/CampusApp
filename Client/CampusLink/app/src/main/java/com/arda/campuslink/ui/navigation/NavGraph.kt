@@ -64,7 +64,7 @@ fun NavGraph(
         }
         composable(route = NavigationScreen.Publish.route)
         {
-            PublishScreen()
+            PublishScreen( navController = navController)
         }
         composable(route = NavigationScreen.Profile.route)
         {
