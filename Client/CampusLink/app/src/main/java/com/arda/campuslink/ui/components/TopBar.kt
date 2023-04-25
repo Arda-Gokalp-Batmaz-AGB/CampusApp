@@ -13,6 +13,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,12 +25,20 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import com.arda.campuslink.ui.screens.mainscreen.MainScreenViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun TopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
+fun TopBar(
+    coroutineScope: CoroutineScope,
+    scaffoldState: ScaffoldState,
+    mainScreenViewmodel: MainScreenViewModel
+) {
+    val state by mainScreenViewmodel.uiState.collectAsState()
+
     TopAppBar(
         backgroundColor = Color.White,
         elevation = 5.dp,
@@ -40,7 +51,7 @@ fun TopBar(coroutineScope: CoroutineScope, scaffoldState: ScaffoldState) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = rememberImagePainter(dummyUserData[0].avatar),
+                painter = rememberAsyncImagePainter(state.currentMinimizedUser?.avatar),
                 modifier = Modifier
                     .size(34.dp)
                     .clip(shape = RoundedCornerShape(17.dp))

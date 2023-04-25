@@ -35,10 +35,6 @@ fun LeftBarPopUp() {
         color = Color.White
     ) {
         val leftBarPopUpViewModel = hiltViewModel<LeftBarPopUpViewModel>()
-        LaunchedEffect(Unit)
-        {
-            leftBarPopUpViewModel.getCurrentUserInfo()
-        }
         val state by leftBarPopUpViewModel.uiState.collectAsState()
         Column {
             Column(

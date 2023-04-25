@@ -24,6 +24,7 @@ import com.arda.campuslink.ui.navigation.NavigationScreen
 @Composable
 fun MainScreen() {
     val authViewmodel = hiltViewModel<AuthViewModel>()
+    val mainScreenViewmodel = hiltViewModel<MainScreenViewModel>()
     val navController = rememberNavController()
     val state = rememberScaffoldState()
     val scope = rememberCoroutineScope()
@@ -33,7 +34,7 @@ fun MainScreen() {
             LeftBarPopUp()
         },
         topBar = {
-            TopBar(scope, state)
+            TopBar(scope, state,mainScreenViewmodel)
         },
         bottomBar = {
             if ((navController.currentBackStackEntryAsState().value?.destination?.route.toString()
