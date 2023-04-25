@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.arda.campuslink.domain.model.LinkedinPost
 import kotlinx.coroutines.CoroutineScope
 import com.arda.campuslink.R
@@ -106,7 +108,7 @@ fun PostTopItem(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = painterResource(id = linkedinPost.user.avatar),
+            painter = rememberImagePainter(linkedinPost.user.avatar),
             contentDescription = "",
             modifier = Modifier.padding(start = 8.dp)
                 .size(40.dp)
@@ -120,7 +122,7 @@ fun PostTopItem(
             Column {
                 Text(
                     color = Black,
-                    text = "${linkedinPost.user.name}",
+                    text = "${linkedinPost.user.userName}",
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 )
                 Text(
