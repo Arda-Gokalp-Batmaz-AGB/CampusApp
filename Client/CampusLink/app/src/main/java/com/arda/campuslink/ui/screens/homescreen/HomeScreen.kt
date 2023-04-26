@@ -65,41 +65,12 @@ fun HomeScreen(
 
         }
         //if(state.currentFeed.size != 0)
-        listState.OnBottomReached(buffer = 2) {
+        listState.OnBottomReached(buffer = 3) {
             homeViewmodel.fetchNewPosts()
         }
-//        InfiniteListHandler(listState = listState) {
-//            homeViewmodel.fetchNewPosts()
-//        }
     }
 }
 
-
-
-@Composable
-fun InfiniteListHandler(
-    listState: LazyListState,
-    buffer: Int = 2,
-    onLoadMore: () -> Unit
-) {
-    val loadMore = remember {
-        derivedStateOf {
-            val layoutInfo = listState.layoutInfo
-            val totalItemsNumber = layoutInfo.totalItemsCount
-            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
-
-            lastVisibleItemIndex > (totalItemsNumber - buffer)
-        }
-    }
-
-    LaunchedEffect(loadMore) {
-        snapshotFlow { Pair(loadMore.value, listState.layoutInfo.totalItemsCount) }
-            .distinctUntilChanged()
-            .collect {
-                onLoadMore()
-            }
-    }
-}
 @Composable
 fun LazyListState.OnBottomReached(
     // tells how many items before we reach the bottom of the list
