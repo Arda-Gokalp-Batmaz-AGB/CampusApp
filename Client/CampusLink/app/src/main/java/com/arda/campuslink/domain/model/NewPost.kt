@@ -7,4 +7,5 @@ data class NewPost(
     val description: String,
     val image: Bitmap?,
     val hashTags : Array<String>,
+    val timestamp: Long
 )
