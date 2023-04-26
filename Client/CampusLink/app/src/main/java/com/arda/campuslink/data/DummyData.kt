@@ -7,11 +7,13 @@ import com.arda.campuslink.util.ImageProcessUtils
 
 val dummyUserData: List<User> = listOf(
     User(
+        "qwe",
         userName = "Batmaz",
         jobTitle = "Öğrenci",
         avatar = ImageProcessUtils.convertBitmapToUri(ImageProcessUtils.getBitmapFromImage(R.drawable.logo)),
     ),
     User(
+        "hahaha",
         userName = "Android Developers",
         jobTitle = "54.714 seguidores",
         avatar =  ImageProcessUtils.convertBitmapToUri(ImageProcessUtils.getBitmapFromImage(R.drawable.logo)),

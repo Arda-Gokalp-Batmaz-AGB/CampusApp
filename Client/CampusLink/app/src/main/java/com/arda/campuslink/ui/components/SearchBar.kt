@@ -21,7 +21,16 @@ import com.arda.campuslink.R
 import com.arda.campuslink.util.LangStringUtil
 
 @Composable
-fun SearchBar() {
+fun SearchBar(textValue : String = "") {
+    var searchText = ""
+    if(textValue !="")
+    {
+        searchText = textValue
+    }
+    else
+    {
+        searchText = LangStringUtil.getLangString(R.string.search)
+    }
     Row(
         modifier = Modifier
             .width(280.dp)
@@ -38,7 +47,7 @@ fun SearchBar() {
             contentDescription = "messages icon",
         )
         Text(
-            text = LangStringUtil.getLangString(R.string.search),
+            text = searchText,
             style = TextStyle(color = Color.Black),
             modifier = Modifier.padding(start = 8.dp, top = 10.dp)
         )
