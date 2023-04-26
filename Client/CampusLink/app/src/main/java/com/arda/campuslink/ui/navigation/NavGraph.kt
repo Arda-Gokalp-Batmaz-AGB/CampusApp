@@ -66,9 +66,5 @@ fun NavGraph(
         {
             PublishScreen( navController = navController)
         }
-        composable(route = NavigationScreen.Profile.route)
-        {
-            ProfileScreen(navController)
-        }
     }
 }

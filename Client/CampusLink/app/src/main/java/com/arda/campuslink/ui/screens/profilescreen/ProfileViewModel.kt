@@ -7,45 +7,49 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arda.campuslink.domain.model.ExtendedUser
+import com.arda.campuslink.domain.model.User
 import com.arda.campuslink.domain.usecase.AuthenticationUseCase
+import com.arda.campuslink.domain.usecase.LoggedUserUseCase
+import com.arda.campuslink.ui.auth.AuthUiState
 import com.arda.mainapp.auth.Resource
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val authenticationUseCase: AuthenticationUseCase
+    private val loggedUserUseCase: LoggedUserUseCase
 ) : ViewModel(), LifecycleObserver {
-    val currentUser: FirebaseUser?
-        get() = authenticationUseCase.getCurrentUser()
-    var editMode by mutableStateOf(false)
-    var enteredDisplayName by mutableStateOf("")
-    var enteredEmail by mutableStateOf("")
-    var enteredPhone by mutableStateOf("")
-    var photoUri by mutableStateOf(currentUser?.photoUrl)
-
-    private val _profileFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
-    val profileFlow: StateFlow<Resource<FirebaseUser>?> = _profileFlow
+    lateinit var authenticatedUser: User
+    private val _uiState = MutableStateFlow(ProfileUiState())
+    val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     init {
-        resetEnteredValues()
+        authenticatedUser = loggedUserUseCase.getMinProfileOfCurrentUser()
+    }
+    fun getUserProfile(user : User) = viewModelScope.launch {
+        _uiState.update {
+            it.copy(profileFlow = Resource.Loading)
+        }
+        val result = loggedUserUseCase.getDetailedUserProfile(user.UID)
+        _uiState.update {
+            it.copy(profileFlow = result)
+        }
     }
 
-    fun resetEnteredValues() {
-        if (!currentUser?.email.isNullOrEmpty())
-            enteredEmail = currentUser!!.email.toString()
-
-        if (!currentUser?.displayName.isNullOrEmpty())
-            enteredDisplayName = currentUser!!.displayName.toString()
-
-        if(!currentUser?.phoneNumber.isNullOrEmpty())
-            enteredPhone = currentUser!!.phoneNumber.toString()
+    fun updateCurrentProfileUser(extendedUser: ExtendedUser)
+    {
+        _uiState.update {
+            it.copy(currentProfileUser = extendedUser)
+        }
     }
-    fun logout() {
-        authenticationUseCase.logout()
-    }
+//    fun logout() {
+//        authenticationUseCase.logout()
+//    }
 }
