@@ -13,6 +13,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,6 +37,7 @@ import coil.compose.rememberImagePainter
 import com.arda.campuslink.domain.model.LinkedinPost
 import kotlinx.coroutines.CoroutineScope
 import com.arda.campuslink.R
+import com.arda.campuslink.ui.screens.profilescreen.ProfileScreen
 import com.arda.campuslink.util.LangStringUtil
 
 @Composable
@@ -100,23 +103,27 @@ fun PostTopItem(
     coroutineScope: CoroutineScope,
     navController: NavController
 ) {
+    val openProfile = remember { mutableStateOf(false) }
+    if (openProfile.value) {
+        linkedinPost?.let { ProfileScreen(openProfile,user = linkedinPost.user) }
+    }
     Row(
         modifier = modifier.padding(top = 8.dp)
             .clickable {
-                //To-DO Go Profile
+                openProfile.value = true
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {
+
         Image(
             painter = rememberImagePainter(linkedinPost.user.avatar),
             contentDescription = "",
             modifier = Modifier.padding(start = 8.dp)
                 .size(40.dp)
-                .clip(shape = RoundedCornerShape(25.dp))
-                .clickable {
-                },
+                .clip(shape = RoundedCornerShape(25.dp)),
             contentScale = ContentScale.Crop,
         )
+
         Spacer(modifier = Modifier.size(8.dp))
         Column {
             Column {

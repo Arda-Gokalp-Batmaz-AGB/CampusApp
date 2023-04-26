@@ -41,6 +41,8 @@ fun ProfileScreen(openProfile : MutableState<Boolean>, user: User) {
         ) {
             LaunchedEffect(key1 = user.UID)
             {
+                Log.v(DebugTags.UITag.tag,"New Profile come")
+
                 profileViewmodel.getUserProfile(user)
             }
             state.profileFlow?.let {
