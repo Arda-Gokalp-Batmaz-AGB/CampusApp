@@ -1,15 +1,19 @@
 package com.arda.campuslink.domain.model
 
 import java.util.*
+import kotlin.collections.ArrayList
 
 data class FeedPost(
+    val postId : String,
     val user: User,
     val description: String,
     val image: Int?,
     var likes: Int,
     val comments: Int,
-    val sharings: Int,
-    val timestamp: Long
+    val shares: Int,
+    val views : Int,
+    val timestamp: Long,
+    val hashTags: Array<String>
 ) {
 
     fun timeAgo(): String {
