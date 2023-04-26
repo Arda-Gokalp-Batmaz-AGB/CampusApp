@@ -1,18 +1,17 @@
 package com.arda.campuslink.domain.usecase
 
 import android.graphics.Bitmap
-import android.net.Uri
 import com.arda.campuslink.domain.model.NewPost
-import com.arda.campuslink.domain.model.User
-import com.arda.campuslink.domain.repository.AuthRepository
+import com.arda.campuslink.domain.repository.PostRepository
+import com.arda.mainapp.auth.Resource
 import javax.inject.Inject
 
 class CreatePostUseCase @Inject constructor(
-   private val loggedUserUseCase: LoggedUserUseCase
-)
-{
-    fun createNewPost(description : String,image : Bitmap)
-    {
+    private val loggedUserUseCase: LoggedUserUseCase,
+    private val postRepository: PostRepository,
+
+    ) {
+    suspend fun createNewPost(description: String, image: Bitmap): Resource<NewPost> {
         val post = NewPost(
             user = loggedUserUseCase.getMinProfileOfCurrentUser(),
             description = description,
@@ -20,11 +19,10 @@ class CreatePostUseCase @Inject constructor(
             hashTags = findTags()
         )
 
-        return
+        return postRepository.createPost(post)
     }
 
-    private fun findTags() : Array<String>
-    {
+    private fun findTags(): Array<String> {
         return arrayOf()
     }
 }
