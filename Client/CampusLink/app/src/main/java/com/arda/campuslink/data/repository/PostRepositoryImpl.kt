@@ -20,6 +20,8 @@ class PostRepositoryImpl @Inject constructor(
     private val firebaseFunctions: FirebaseFunctions,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : PostRepository {
+
+    val userPostFeed : ArrayList<FeedPost> = arrayListOf()
     override suspend fun createPost(newPost: NewPost): Resource<FeedPost> =
         withContext(
             dispatcher
@@ -51,11 +53,27 @@ class PostRepositoryImpl @Inject constructor(
             TODO("Not yet implemented")
         }
 
-    override suspend fun getUserPosts(userID: String): Resource<Array<FeedPost>> {
+    override suspend fun getUserPosts(userID: String): Resource<Array<FeedPost>> =
+        withContext(
+            dispatcher
+        ){
         TODO("Not yet implemented")
     }
 
-    override suspend fun getRecommendedPosts(userID: String): Resource<Array<FeedPost>> {
-        TODO("Not yet implemented")
+    override suspend fun getRecommendedPosts(userID: String): Resource<ArrayList<FeedPost>> =
+    withContext(
+    dispatcher
+    ) {
+        val posts = arrayListOf<FeedPost>()
+        userPostFeed.add(DUMMY_FEED_DATA[0])
+        userPostFeed.add(DUMMY_FEED_DATA[1])
+        posts.add(DUMMY_FEED_DATA[0])
+        posts.add(DUMMY_FEED_DATA[1])
+        return@withContext try {
+            Resource.Sucess(posts!!)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Failure<Exception>(e)
+        }
     }
 }

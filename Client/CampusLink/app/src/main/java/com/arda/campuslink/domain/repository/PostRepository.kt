@@ -10,6 +10,6 @@ interface PostRepository {
     suspend fun interactPost(post: FeedPost) : Resource<FeedPost>
     suspend fun removePost(post: FeedPost) : Resource<FeedPost>
     suspend fun getUserPosts(userID : String) : Resource<Array<FeedPost>>
-    suspend fun getRecommendedPosts(userID : String) : Resource<Array<FeedPost>>
+    suspend fun getRecommendedPosts(userID : String) : Resource<ArrayList<FeedPost>>
 
 }
