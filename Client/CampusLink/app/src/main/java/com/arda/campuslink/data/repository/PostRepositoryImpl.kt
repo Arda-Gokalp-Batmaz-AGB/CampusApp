@@ -1,5 +1,6 @@
 package com.arda.campuslink.data.repository
 
+import com.arda.campuslink.data.DUMMY_FEED_DATA
 import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.domain.model.NewPost
 import com.arda.campuslink.domain.repository.AuthRepository
@@ -19,14 +20,15 @@ class PostRepositoryImpl @Inject constructor(
     private val firebaseFunctions: FirebaseFunctions,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : PostRepository {
-    override suspend fun createPost(newPost: NewPost): Resource<NewPost> =
+    override suspend fun createPost(newPost: NewPost): Resource<FeedPost> =
         withContext(
             dispatcher
         )
         {
             return@withContext try {
                 //val result = auth.signInWithEmailAndPassword(email, password).await()
-                Resource.Sucess(newPost!!)
+                    //Return edilen postu FeedPost Yap öyle al
+                Resource.Sucess(DUMMY_FEED_DATA[2]!!)
             } catch (e: Exception) {
                 e.printStackTrace()
                 Resource.Failure<Exception>(e)
