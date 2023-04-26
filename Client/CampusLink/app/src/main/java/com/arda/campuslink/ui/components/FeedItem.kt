@@ -297,11 +297,11 @@ fun LikesReactions(modifier: Modifier = Modifier, icons: List<ImageVector>, feed
                 text = " • ", color = Color.DarkGray,
                 style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
             )
-            if (feedPost.sharings != 0) {
+            if (feedPost.shares != 0) {
                 Text(
-                    text = "${feedPost.sharings} ${LangStringUtil.getLangString(R.string.Share)}"
+                    text = "${feedPost.shares} ${LangStringUtil.getLangString(R.string.Share)}"
                             + getLikesOrCommentsString(
-                        feedPost.sharings
+                        feedPost.shares
                     ), color = Color.DarkGray,
                     style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 )
