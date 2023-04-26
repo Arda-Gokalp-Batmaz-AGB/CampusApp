@@ -1,36 +1,132 @@
 package com.arda.campuslink.ui.screens.homescreen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.arda.campuslink.data.DUMMY_FEED_DATA
 import com.arda.campuslink.ui.components.FeedItem
+import com.arda.campuslink.ui.screens.mainscreen.MainScreenViewModel
+import com.arda.campuslink.util.DebugTags
+import com.arda.mainapp.auth.Resource
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     coroutineScope: CoroutineScope,
 ) {
+    val homeViewmodel = hiltViewModel<HomeViewModel>()
+    val state by homeViewmodel.uiState.collectAsState()
+    val listState = rememberLazyListState()
     Box(
         Modifier
 
     ) {
+        state.feedFlow?.let {
+            when (it) {
+                is Resource.Failure<*> -> {
+                }
+                Resource.Loading -> {
+                    CircularProgressIndicator()
+                }
+                is Resource.Sucess -> {
+                    LaunchedEffect(Unit)
+                    {
+                        Log.v(DebugTags.UITag.tag,"Feed Fetched Sucessfully!!")
+                        homeViewmodel.updateCurrentFeed(it.result)
+                    }
+
+                }
+            }
+        }
+
         LazyColumn(
             modifier = Modifier,
-            //state = scrollState
+            state = listState
         )
         {
-            items(DUMMY_FEED_DATA.size) { idx ->
+            items(state.currentFeed.size) { idx ->
                 FeedItem(
-                    feedPost = DUMMY_FEED_DATA[idx],
+                    feedPost = state.currentFeed[idx],
                     coroutineScope = coroutineScope,
                     navController = navController
                 )
             }
 
         }
+        //if(state.currentFeed.size != 0)
+        listState.OnBottomReached(buffer = 2) {
+            homeViewmodel.fetchNewPosts()
+        }
+//        InfiniteListHandler(listState = listState) {
+//            homeViewmodel.fetchNewPosts()
+//        }
+    }
+}
+
+
+
+@Composable
+fun InfiniteListHandler(
+    listState: LazyListState,
+    buffer: Int = 2,
+    onLoadMore: () -> Unit
+) {
+    val loadMore = remember {
+        derivedStateOf {
+            val layoutInfo = listState.layoutInfo
+            val totalItemsNumber = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = (layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0) + 1
+
+            lastVisibleItemIndex > (totalItemsNumber - buffer)
+        }
+    }
+
+    LaunchedEffect(loadMore) {
+        snapshotFlow { Pair(loadMore.value, listState.layoutInfo.totalItemsCount) }
+            .distinctUntilChanged()
+            .collect {
+                onLoadMore()
+            }
+    }
+}
+@Composable
+fun LazyListState.OnBottomReached(
+    // tells how many items before we reach the bottom of the list
+    // to call onLoadMore function
+    buffer : Int = 0,
+    onLoadMore : () -> Unit
+) {
+    // Buffer must be positive.
+    // Or our list will never reach the bottom.
+    require(buffer >= 0) { "buffer cannot be negative, but was $buffer" }
+
+    val shouldLoadMore = remember {
+        derivedStateOf {
+            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+                ?:
+                return@derivedStateOf true
+
+            Log.v(DebugTags.UITag.tag,"lastVisibleItem = ${lastVisibleItem.index}")
+            Log.v(DebugTags.UITag.tag,"Layout Info = ${layoutInfo.totalItemsCount}")
+
+            // subtract buffer from the total items
+            lastVisibleItem.index >=  layoutInfo.totalItemsCount - 1 - buffer
+        }
+    }
+
+    LaunchedEffect(shouldLoadMore){
+        snapshotFlow {  Pair(shouldLoadMore.value, layoutInfo.totalItemsCount)}
+            .collect { if (it.first) onLoadMore() }
     }
 }

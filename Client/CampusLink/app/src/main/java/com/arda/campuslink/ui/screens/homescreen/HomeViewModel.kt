@@ -28,7 +28,7 @@ class HomeViewModel @Inject constructor(
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     init {
-        fetchNewPosts()
+        //fetchNewPosts()
     }
     fun fetchNewPosts() = viewModelScope.launch {
         _uiState.update {

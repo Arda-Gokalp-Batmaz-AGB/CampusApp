@@ -72,6 +72,7 @@ fun PublishScreen(navController: NavHostController) {
                                 LaunchedEffect(Unit)
                                 {
                                     //TO-DO Toast message
+                                    publishViewModel.addPostToFeed(it.result)
                                     openDialog.value = false
                                     navController.popBackStack()
                                 }
