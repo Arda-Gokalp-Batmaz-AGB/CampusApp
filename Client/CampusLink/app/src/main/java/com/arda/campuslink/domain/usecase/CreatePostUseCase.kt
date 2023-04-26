@@ -7,5 +7,8 @@ class CreatePostUseCase @Inject constructor(
 //    private val loggedUserUseCase: LoggedUserUseCase
 )
 {
-
+    fun createNewPost()
+    {
+        
+    }
 }

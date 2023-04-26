@@ -2,12 +2,10 @@ package com.arda.campuslink.ui.screens.homescreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material.ScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.arda.campuslink.data.dummyFeedData
+import com.arda.campuslink.data.DUMMY_FEED_DATA
 import com.arda.campuslink.ui.components.FeedItem
 import kotlinx.coroutines.CoroutineScope
 
@@ -25,9 +23,9 @@ fun HomeScreen(
             //state = scrollState
         )
         {
-            items(dummyFeedData.size) { idx ->
+            items(DUMMY_FEED_DATA.size) { idx ->
                 FeedItem(
-                    linkedinPost = dummyFeedData[idx],
+                    feedPost = DUMMY_FEED_DATA[idx],
                     coroutineScope = coroutineScope,
                     navController = navController
                 )

@@ -21,7 +21,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.Blue
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.layoutId
@@ -34,7 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.arda.campuslink.domain.model.LinkedinPost
+import com.arda.campuslink.domain.model.FeedPost
 import kotlinx.coroutines.CoroutineScope
 import com.arda.campuslink.R
 import com.arda.campuslink.ui.screens.profilescreen.ProfileScreen
@@ -42,7 +41,7 @@ import com.arda.campuslink.util.LangStringUtil
 
 @Composable
 fun FeedItem(
-    linkedinPost: LinkedinPost,
+    feedPost: FeedPost,
     coroutineScope: CoroutineScope,
     navController: NavController
 ) {
@@ -81,31 +80,31 @@ fun FeedItem(
             .padding(top = 8.dp).background(color = Color.White)
     ) {
         PostTopItem(
-            linkedinPost,
+            feedPost,
             modifier = Modifier.layoutId("post_top_bar"),
             coroutineScope,
             navController
         )
         FollowButton(modifier = Modifier.layoutId("post_follow_button"))
         PostTextAndImage(
-            linkedinPost = linkedinPost,
+            feedPost = feedPost,
             modifier = Modifier.layoutId("post_text_and_image")
         )
-        PostOptions(linkedinPost = linkedinPost, modifier = Modifier.layoutId("post_options"))
+        PostOptions(feedPost = feedPost, modifier = Modifier.layoutId("post_options"))
     }
 
 }
 
 @Composable
 fun PostTopItem(
-    linkedinPost: LinkedinPost,
+    feedPost: FeedPost,
     modifier: Modifier = Modifier,
     coroutineScope: CoroutineScope,
     navController: NavController
 ) {
     val openProfile = remember { mutableStateOf(false) }
     if (openProfile.value) {
-        linkedinPost?.let { ProfileScreen(openProfile,user = linkedinPost.user) }
+        feedPost?.let { ProfileScreen(openProfile,user = feedPost.user) }
     }
     Row(
         modifier = modifier.padding(top = 8.dp)
@@ -116,7 +115,7 @@ fun PostTopItem(
     ) {
 
         Image(
-            painter = rememberImagePainter(linkedinPost.user.avatar),
+            painter = rememberImagePainter(feedPost.user.avatar),
             contentDescription = "",
             modifier = Modifier.padding(start = 8.dp)
                 .size(40.dp)
@@ -129,12 +128,12 @@ fun PostTopItem(
             Column {
                 Text(
                     color = Black,
-                    text = "${linkedinPost.user.userName}",
+                    text = "${feedPost.user.userName}",
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 )
                 Text(
                     color = Color.Gray,
-                    text = linkedinPost.user.jobTitle,
+                    text = feedPost.user.jobTitle,
                     style = TextStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp)
                 )
             }
@@ -143,7 +142,7 @@ fun PostTopItem(
             ) {
                 Text(
                     color = Color.Gray,
-                    text = "${linkedinPost.timeAgo()} • ",
+                    text = "${feedPost.timeAgo()} • ",
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 12.sp)
                 )
                 Icon(
@@ -181,21 +180,21 @@ private fun FollowButton(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun PostTextAndImage(modifier: Modifier = Modifier, linkedinPost: LinkedinPost) {
+fun PostTextAndImage(modifier: Modifier = Modifier, feedPost: FeedPost) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.Start
     ) {
         ExpandableText(
-            text = linkedinPost.description,
+            text = feedPost.description,
             style = TextStyle(fontSize = 12.sp),
             modifier = Modifier.padding(start = 8.dp, bottom = 8.dp),
         )
 
-        if (linkedinPost.image != null) {
+        if (feedPost.image != null) {
             Image(
                 contentScale = ContentScale.FillWidth,
-                painter = painterResource(id = linkedinPost.image),
+                painter = painterResource(id = feedPost.image),
                 contentDescription = "",
                 modifier = Modifier.fillMaxWidth()
             )
@@ -205,7 +204,7 @@ fun PostTextAndImage(modifier: Modifier = Modifier, linkedinPost: LinkedinPost) 
 }
 
 @Composable
-fun PostOptions(modifier: Modifier = Modifier, linkedinPost: LinkedinPost) {
+fun PostOptions(modifier: Modifier = Modifier, feedPost: FeedPost) {
     Column(modifier = modifier.padding(4.dp)) {
 
         LikesReactions(
@@ -215,7 +214,7 @@ fun PostOptions(modifier: Modifier = Modifier, linkedinPost: LinkedinPost) {
                 Icons.Filled.SentimentSatisfied,
                 Icons.Filled.EmojiObjects
             ),
-            linkedinPost = linkedinPost,
+            feedPost = feedPost,
         )
 
         Row {
@@ -258,7 +257,7 @@ private fun PostItem(title: String, icon: ImageVector) {
 }
 
 @Composable
-fun LikesReactions(modifier: Modifier = Modifier, icons: List<ImageVector>, linkedinPost: LinkedinPost) {
+fun LikesReactions(modifier: Modifier = Modifier, icons: List<ImageVector>, feedPost: FeedPost) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -277,18 +276,18 @@ fun LikesReactions(modifier: Modifier = Modifier, icons: List<ImageVector>, link
                 }
             }
             Text(
-                text = linkedinPost.likes.toString(), color = Color.DarkGray,
+                text = feedPost.likes.toString(), color = Color.DarkGray,
                 modifier = Modifier.padding(start = 8.dp),
                 style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold
                 )
             )
         }
         Row {
-            if (linkedinPost.comments != 0) {
+            if (feedPost.comments != 0) {
                 Text(
-                    text = "${linkedinPost.comments} ${LangStringUtil.getLangString(R.string.comment)}"
+                    text = "${feedPost.comments} ${LangStringUtil.getLangString(R.string.comment)}"
                             + getLikesOrCommentsString(
-                        linkedinPost.likes
+                        feedPost.likes
                     ),
                     color = Color.DarkGray,
                     style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
@@ -298,11 +297,11 @@ fun LikesReactions(modifier: Modifier = Modifier, icons: List<ImageVector>, link
                 text = " • ", color = Color.DarkGray,
                 style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
             )
-            if (linkedinPost.sharings != 0) {
+            if (feedPost.sharings != 0) {
                 Text(
-                    text = "${linkedinPost.sharings} ${LangStringUtil.getLangString(R.string.Share)}"
+                    text = "${feedPost.sharings} ${LangStringUtil.getLangString(R.string.Share)}"
                             + getLikesOrCommentsString(
-                        linkedinPost.sharings
+                        feedPost.sharings
                     ), color = Color.DarkGray,
                     style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 )

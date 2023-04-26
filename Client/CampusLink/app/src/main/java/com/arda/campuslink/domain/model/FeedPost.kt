@@ -2,7 +2,7 @@ package com.arda.campuslink.domain.model
 
 import java.util.*
 
-data class LinkedinPost(
+data class FeedPost(
     val user: User,
     val description: String,
     val image: Int?,
