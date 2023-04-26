@@ -18,22 +18,20 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.arda.campuslink.R
-import com.arda.campuslink.data.dummyUserData
 import com.arda.campuslink.ui.components.PublishTopBar
 import com.arda.campuslink.util.LangStringUtil
+import com.arda.mainapp.auth.Resource
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
@@ -52,15 +50,37 @@ fun PublishScreen(navController: NavHostController) {
             )
         ) {
             if (openDialog.value) {
+                val publishViewModel = hiltViewModel<PublishViewModel>()
+                val state by publishViewModel.uiState.collectAsState()
+
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize(),
                     topBar = {
-                        PublishTopBar(openDialog, navController)
+                        PublishTopBar(openDialog, publishViewModel, navController)
                     },
                 )
                 {
-                    postArea()
+                    state.postCreateFlow?.let {
+                        when (it) {
+                            is Resource.Failure<*> -> {
+                            }
+                            Resource.Loading -> {
+                                CircularProgressIndicator()
+                            }
+                            is Resource.Sucess -> {
+                                LaunchedEffect(Unit)
+                                {
+                                    //TO-DO Toast message
+                                    openDialog.value = false
+                                    navController.popBackStack()
+                                }
+
+                            }
+                        }
+                    }
+
+                    postArea(state, publishViewModel)
                 }
 
 
@@ -72,22 +92,23 @@ fun PublishScreen(navController: NavHostController) {
 }
 
 @Composable
-fun postArea() {
+fun postArea(state: PublishUiState, publishViewModel: PublishViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
 
     )
     {
-        postTopArea()
-        postTextArea()
+        postTopArea(state)
+        postTextArea(state, publishViewModel)
         postBottomArea()
     }
 
 }
 
 @Composable
-fun postTopArea() {
+fun postTopArea(state: PublishUiState) {
+
     Row(
         modifier = Modifier
             .padding(top = 8.dp)
@@ -97,7 +118,7 @@ fun postTopArea() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            painter = rememberImagePainter(dummyUserData[0].avatar),
+            painter = rememberImagePainter(state.currentMinimizedUser?.avatar),
             contentDescription = "",
             modifier = Modifier
                 .padding(start = 8.dp)
@@ -112,7 +133,7 @@ fun postTopArea() {
             Column {
                 Text(
                     color = Color.Black,
-                    text = "${dummyUserData[0].userName}",
+                    text = "${state.currentMinimizedUser?.userName}",
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 )
             }
@@ -122,8 +143,7 @@ fun postTopArea() {
 }
 
 @Composable
-fun postTextArea() {
-    var textState by remember { mutableStateOf("") }
+fun postTextArea(state: PublishUiState, publishViewModel: PublishViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -132,11 +152,11 @@ fun postTextArea() {
         TextField(
             colors = TextFieldDefaults.textFieldColors(
                 backgroundColor = MaterialTheme.colors.background
-            ), value = textState,
+            ), value = state.description,
             label = {
                 Text(LangStringUtil.getLangString(R.string.what_hint))
             },
-            onValueChange = { textState = it })
+            onValueChange = { publishViewModel.updateDescription(it) })
     }
 }
 
@@ -149,7 +169,8 @@ fun postBottomArea() {
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth().background(MaterialTheme.colors.background),
+                .fillMaxWidth()
+                .background(MaterialTheme.colors.background),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
 

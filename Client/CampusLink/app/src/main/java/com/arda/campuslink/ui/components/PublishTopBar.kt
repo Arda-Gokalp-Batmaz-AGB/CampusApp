@@ -21,13 +21,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.arda.campuslink.R
 import com.arda.campuslink.data.dummyUserData
+import com.arda.campuslink.ui.screens.publishscreen.PublishUiState
+import com.arda.campuslink.ui.screens.publishscreen.PublishViewModel
 import com.arda.campuslink.util.LangStringUtil
 import kotlinx.coroutines.launch
 
 @Composable
-fun PublishTopBar(openDialog: MutableState<Boolean>,navController: NavHostController) {
+fun PublishTopBar(
+    openDialog: MutableState<Boolean>,
+    publishViewModel: PublishViewModel,
+    navController: NavHostController
+) {
     TopAppBar(
-        backgroundColor =MaterialTheme.colors.background,
+        backgroundColor = MaterialTheme.colors.background,
         elevation = 5.dp,
     ) {
         Row(
@@ -50,7 +56,10 @@ fun PublishTopBar(openDialog: MutableState<Boolean>,navController: NavHostContro
                 contentScale = ContentScale.Crop,
                 contentDescription = "profile drawer icon",
             )
-            Button(onClick = { /*TODO Post*/ }, shape = RoundedCornerShape(15.dp),) {
+            Button(
+                onClick = { publishViewModel.createPost() },
+                shape = RoundedCornerShape(15.dp),
+            ) {
                 Text(LangStringUtil.getLangString(R.string.post))
             }
         }
