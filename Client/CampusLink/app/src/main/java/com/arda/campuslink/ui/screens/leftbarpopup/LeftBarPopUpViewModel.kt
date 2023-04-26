@@ -31,4 +31,5 @@ class LeftBarPopUpViewModel @Inject constructor(
             it.copy(currentMinimizedUser = loggedUserUseCase.getMinProfileOfCurrentUser() )
         }
     }
+
 }
