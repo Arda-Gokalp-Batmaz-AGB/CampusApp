@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,6 +31,7 @@ class UserRepositoryImpl @Inject constructor(
         return@withContext try {
             currentUser =
                 ExtendedUser(
+                    UID = "qwe",
                     userName = "Batmaz Arda Gokalp",
                     jobTitle = "Student",
                     avatar = R.drawable.logo,
@@ -55,6 +57,7 @@ class UserRepositoryImpl @Inject constructor(
                 ImageProcessUtils.convertBitmapToUri(ImageProcessUtils.getBitmapFromImage(R.drawable.logo))
                     ?.let {
                         User(
+                            UID = "ASD",
                             userName = "Batmaz Arda Gokalp",
                             jobTitle = "Student",
                             avatar = it,

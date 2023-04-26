@@ -22,6 +22,7 @@ class LoggedUserUseCase @Inject constructor(
 
     fun getMinProfileOfCurrentUser(): User {
         return User(
+            userRepository.currentFirebaseUser!!.uid,
             userRepository.currentFirebaseUser!!.displayName!!,
             "",
            userRepository.currentFirebaseUser!!.photoUrl!!

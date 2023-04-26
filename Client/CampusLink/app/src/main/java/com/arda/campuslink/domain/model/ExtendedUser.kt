@@ -1,6 +1,7 @@
 package com.arda.campuslink.domain.model
 
 data class ExtendedUser(
+    val UID : String,
     val userName: String,
     val jobTitle: String,
     val avatar: Int,
