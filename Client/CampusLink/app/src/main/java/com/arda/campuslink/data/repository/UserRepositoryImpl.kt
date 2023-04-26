@@ -32,7 +32,7 @@ class UserRepositoryImpl @Inject constructor(
             currentUser =
                 ExtendedUser(
                     UID = "qwe",
-                    userName = "Batmaz Arda Gokalp",
+                    userName = "Batmaz Arda Gokalp1",
                     jobTitle = "Student",
                     avatar = R.drawable.logo,
                     banner = R.drawable.logo,

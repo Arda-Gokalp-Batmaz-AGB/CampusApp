@@ -13,11 +13,7 @@ class LoggedUserUseCase @Inject constructor(
 
     ) {
     suspend fun getDetailedUserProfile(userId: String): Resource<ExtendedUser> {
-        if (userRepository.currentUser != null) {
-            return Resource.Sucess(userRepository.currentUser!!)
-        } else {
-            return userRepository.getDetailedUserInfo(userId)
-        }
+        return userRepository.getDetailedUserInfo(userId)
     }
 
     fun getMinProfileOfCurrentUser(): User {
@@ -25,7 +21,7 @@ class LoggedUserUseCase @Inject constructor(
             userRepository.currentFirebaseUser!!.uid,
             userRepository.currentFirebaseUser!!.displayName!!,
             "",
-           userRepository.currentFirebaseUser!!.photoUrl!!
+            userRepository.currentFirebaseUser!!.photoUrl!!
         )
     }
 
