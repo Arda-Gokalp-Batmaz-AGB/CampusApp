@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
 import com.arda.campuslink.ui.screens.mainscreen.MainScreenViewModel
+import com.arda.campuslink.util.LangStringUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -62,27 +63,7 @@ fun TopBar(
                 contentDescription = "profile drawer icon",
             )
 
-            Row(
-                modifier = Modifier
-                    .width(280.dp)
-                    .height(40.dp)
-                    .clip(shape = RoundedCornerShape(2.dp))
-                    .background(color = MaterialTheme.colors.secondaryVariant)
-            ) {
-                Icon(
-                    Icons.Filled.Search,
-                    tint = Color.Black,
-                    modifier = Modifier
-                        .width(24.dp)
-                        .padding(start = 4.dp, top = 10.dp),
-                    contentDescription = "messages icon",
-                )
-                Text(
-                    text = "Pesquisar",
-                    style = TextStyle(color = Color.Black),
-                    modifier = Modifier.padding(start = 8.dp, top = 10.dp)
-                )
-            }
+            SearchBar()
 
             Icon(
                 Icons.Filled.Message,
