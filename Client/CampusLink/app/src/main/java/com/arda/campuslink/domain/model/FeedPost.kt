@@ -13,7 +13,8 @@ data class FeedPost(
     val shares: Int,
     val views : Int,
     val timestamp: Long,
-    val hashTags: Array<String>
+    val hashTags: Array<String>,
+    val priority : Int = 1,
 ) {
 
     fun timeAgo(): String {

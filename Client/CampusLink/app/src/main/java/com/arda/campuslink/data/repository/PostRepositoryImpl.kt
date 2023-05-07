@@ -1,8 +1,7 @@
 package com.arda.campuslink.data.repository
 
 import com.arda.campuslink.R
-import com.arda.campuslink.data.DUMMY_FEED_DATA
-import com.arda.campuslink.data.dummyUserData
+import com.arda.campuslink.data.DUMMYDATA.DUMMY_FEED_DATA
 import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.domain.model.NewPost
 import com.arda.campuslink.domain.repository.AuthRepository
@@ -47,7 +46,8 @@ class PostRepositoryImpl @Inject constructor(
                     shares = 0,
                     views = 0,
                     timestamp = newPost.timestamp,
-                    hashTags = arrayOf()
+                    hashTags = arrayOf(),
+                    priority = 0
                 )
                 userPostFeed.add(feedPost)
                 Resource.Sucess(feedPost)

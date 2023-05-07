@@ -5,7 +5,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Search
-import com.arda.campuslink.data.dummyUserData
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
