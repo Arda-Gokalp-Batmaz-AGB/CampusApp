@@ -45,8 +45,20 @@ class HomeViewModel @Inject constructor(
             val temp = arrayListOf<FeedPost>()
             temp.addAll(it.currentFeed)
             temp.addAll(newFeed)
+            temp.sortBy { x -> x.priority }
             it.copy(currentFeed = temp)
         }
         Log.v(DebugTags.UITag.tag,"Current updated feed = ${_uiState.value.currentFeed}")
+    }
+    fun refreshCurrentFeed()
+    {
+        _uiState.update {
+            val temp = arrayListOf<FeedPost>()
+            temp.addAll(it.currentFeed)
+            temp.sortBy { x -> x.priority }
+            it.copy(currentFeed = temp)
+        }
+        Log.v(DebugTags.UITag.tag,"Feed Refreshed")
+
     }
 }
