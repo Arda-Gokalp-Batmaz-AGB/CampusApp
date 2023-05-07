@@ -1,7 +1,7 @@
 package com.arda.campuslink.data.repository
 
 import com.arda.campuslink.R
-import com.arda.campuslink.data.dummyUserData
+import com.arda.campuslink.data.DUMMYDATA.dummyUserData
 import com.arda.campuslink.domain.model.User
 import com.arda.campuslink.domain.model.ExtendedUser
 import com.arda.campuslink.domain.repository.UserRepository

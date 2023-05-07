@@ -20,7 +20,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.arda.campuslink.R
-import com.arda.campuslink.data.dummyUserData
 import com.arda.campuslink.ui.screens.publishscreen.PublishUiState
 import com.arda.campuslink.ui.screens.publishscreen.PublishViewModel
 import com.arda.campuslink.util.LangStringUtil
