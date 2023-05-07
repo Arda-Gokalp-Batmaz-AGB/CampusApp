@@ -87,13 +87,21 @@ class PostRepositoryImpl @Inject constructor(
         val posts = arrayListOf<FeedPost>()
         posts.add(DUMMY_FEED_DATA[0])
         posts.add(DUMMY_FEED_DATA[1])
-        posts.addAll(userPostFeed)
-        userPostFeed.clear()
+//        posts.addAll(userPostFeed)
+//        userPostFeed.clear()
         return@withContext try {
             Resource.Sucess(posts!!)
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Failure<Exception>(e)
         }
+    }
+
+    override fun getNewlyAddedPostsByUser():ArrayList<FeedPost>
+    {
+        val posts = arrayListOf<FeedPost>()
+        posts.addAll(userPostFeed)
+        userPostFeed.clear()
+        return posts
     }
 }

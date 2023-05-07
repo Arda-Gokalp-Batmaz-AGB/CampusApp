@@ -52,13 +52,29 @@ class HomeViewModel @Inject constructor(
     }
     fun refreshCurrentFeed()
     {
+        resetFeed()
+        fetchNewPosts()
         _uiState.update {
-            val temp = arrayListOf<FeedPost>()
-            temp.addAll(it.currentFeed)
-            temp.sortBy { x -> x.priority }
-            it.copy(currentFeed = temp)
+            it.copy(isFeedRefreshing = false)
         }
         Log.v(DebugTags.UITag.tag,"Feed Refreshed")
 
+    }
+    private fun resetFeed()
+    {
+        _uiState.update {
+            val temp = arrayListOf<FeedPost>()
+            it.copy(currentFeed = temp, isFeedRefreshing = true)
+        }
+    }
+    fun getNewlyAddedPostsByUser()
+    {
+        val posts = userPostFeedUseCase.getNewlyAddedPostsByUser()
+        if(!posts.isEmpty())
+        {
+            Log.v(DebugTags.UITag.tag,"Newly added posts added to the feed")
+
+            updateCurrentFeed(posts)
+        }
     }
 }
