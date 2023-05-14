@@ -1,9 +1,11 @@
 package com.arda.campuslink.di
 
 import com.arda.campuslink.data.repository.AuthRepositoryImpl
+import com.arda.campuslink.data.repository.CommentRepositoryImpl
 import com.arda.campuslink.data.repository.PostRepositoryImpl
 import com.arda.campuslink.data.repository.UserRepositoryImpl
 import com.arda.campuslink.domain.repository.AuthRepository
+import com.arda.campuslink.domain.repository.CommentRepository
 import com.arda.campuslink.domain.repository.PostRepository
 import com.arda.campuslink.domain.repository.UserRepository
 import com.arda.campuslink.domain.usecase.AuthenticationUseCase
@@ -35,4 +37,9 @@ object RepositoryModule {
     fun PostRepository(
         firebaseFunctions: FirebaseFunctions
     ): PostRepository = PostRepositoryImpl(firebaseFunctions)
+    @Singleton
+    @Provides
+    fun CommentRepository(
+        firebaseFunctions: FirebaseFunctions
+    ): CommentRepository = CommentRepositoryImpl(firebaseFunctions)
 }
