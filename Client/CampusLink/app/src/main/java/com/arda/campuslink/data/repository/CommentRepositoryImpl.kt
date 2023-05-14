@@ -1,10 +1,12 @@
 package com.arda.campuslink.data.repository
 
+import android.util.Log
 import com.arda.campuslink.data.DUMMYDATA
 import com.arda.campuslink.domain.model.Comment
 import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.domain.repository.CommentRepository
 import com.arda.campuslink.domain.repository.PostRepository
+import com.arda.campuslink.util.DebugTags
 import com.arda.mainapp.auth.Resource
 import com.google.firebase.functions.FirebaseFunctions
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,11 +36,11 @@ class CommentRepositoryImpl @Inject constructor(
         withContext(
             dispatcher
         ) {
-
+            Log.v(DebugTags.DataTag.tag,"User of post: ${post.user}")
             val comments = arrayListOf<Comment>(
                 Comment(
                     postId = post.postId,
-                    parentCommentId = "sad",
+                    parentCommentId = "",
                     commentId = "asd",
                     user=post.user,
                     description = "asdsadasdsdasdas",
@@ -49,7 +51,7 @@ class CommentRepositoryImpl @Inject constructor(
                 Comment(
                     postId = post.postId,
                     parentCommentId = "asd",
-                    commentId = "",
+                    commentId = "saf",
                     user=post.user,
                     description = "asdsadasdsdasdas",
                     likes = 5,
@@ -58,8 +60,8 @@ class CommentRepositoryImpl @Inject constructor(
                 ),
                 Comment(
                     postId = post.postId,
-                    parentCommentId = "sad4",
-                    commentId = "",
+                    parentCommentId = "",
+                    commentId = "fr",
                     user=post.user,
                     description = "asdsadasdsdasdsadsadsadas",
                     likes = 0,

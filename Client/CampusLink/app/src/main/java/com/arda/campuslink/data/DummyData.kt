@@ -1,5 +1,6 @@
 package com.arda.campuslink.data
 
+import android.net.Uri
 import com.arda.campuslink.R
 import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.domain.model.User
@@ -18,8 +19,8 @@ object DUMMYDATA{
         User(
             "hahaha",
             userName = "Android Developers",
-            jobTitle = "54.714 seguidores",
-            avatar =  null//ImageProcessUtils.convertBitmapToUri(ImageProcessUtils.getBitmapFromImage(R.drawable.logo)),
+            jobTitle = "Comp Student",
+            avatar = Uri.parse("https://lh3.googleusercontent.com/a/AGNmyxbeQE48SXrpwk7ODnkYujSFzgZHwcjxPoD9R4s5UA=s96-c") ///ImageProcessUtils.convertBitmapToUri(ImageProcessUtils.getBitmapFromImage(R.drawable.logo)),
         )
     )
     val DUMMY_FEED_DATA: List<FeedPost> = listOf(
