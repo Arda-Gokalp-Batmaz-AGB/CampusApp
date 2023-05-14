@@ -22,10 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.arda.campuslink.domain.model.Comment
 import com.arda.campuslink.domain.model.ExtendedUser
 import com.arda.campuslink.domain.model.FeedPost
-import com.arda.campuslink.ui.components.CommentItem
-import com.arda.campuslink.ui.components.CommentTopBar
-import com.arda.campuslink.ui.components.FeedItem
-import com.arda.campuslink.ui.components.ProfileTopBar
+import com.arda.campuslink.ui.components.*
 import com.arda.campuslink.ui.screens.homescreen.HomeViewModel
 import com.arda.campuslink.ui.screens.homescreen.OnBottomReached
 import com.arda.campuslink.ui.screens.profilescreen.ProfileViewModel
@@ -34,7 +31,7 @@ import com.arda.mainapp.auth.Resource
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.type.DateTime
-
+import androidx.compose.foundation.lazy.items
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -52,29 +49,6 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
                 usePlatformDefaultWidth = false // experimental
             )
         ) {
-//            LaunchedEffect(key1 = feedPost.UID)
-//            {
-//                Log.v(DebugTags.UITag.tag,"New Profile come")
-//
-//                profileViewmodel.getUserProfile(feedPost)
-//            }
-//            state.profileFlow?.let {
-//                when (it) {
-//                    is Resource.Failure<*> -> {
-//                    }
-//                    Resource.Loading -> {
-//                        CircularProgressIndicator()
-//                    }
-//                    is Resource.Sucess -> {
-//                        LaunchedEffect(Unit)
-//                        {
-//                            profileViewmodel.updateCurrentProfileUser(it.result)
-//                        }
-//
-//                    }
-//                }
-//            }
-
             if (openPost.value)//&& state.currentProfileUser != null)
             {
                 Scaffold(
@@ -83,6 +57,9 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
                     topBar = {
                         CommentTopBar(openPost)
                     },
+                    bottomBar = {
+                        CreateCommentItem()
+                    }
                 )
                 {
                     CommentBody(feedPost)
@@ -103,18 +80,7 @@ fun CommentBody(currentPost: FeedPost) {
         elevation = 5.dp,
     )
     {
-//        Column() {
-//            Box(modifier = Modifier
-//                .fillMaxWidth()
-//                .wrapContentHeight())
-//            {
-//                FeedItem(
-//                    feedPost = currentPost,
-//                )
-//            }
-
             CommentSection(currentPost)
-//        }
     }
 
 
@@ -125,7 +91,6 @@ fun CommentSection(currentPost: FeedPost) {
     val commentViewmodel = hiltViewModel<CommentViewModel>()
     val state by commentViewmodel.uiState.collectAsState()
     val listState = rememberLazyListState()
-    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isFeedRefreshing)
     state.feedFlow?.let {
         when (it) {
             is Resource.Failure<*> -> {
@@ -159,10 +124,19 @@ fun CommentSection(currentPost: FeedPost) {
                 )
             }
         }
-        items(state.currentFeed.size) { idx ->
-            CommentItem(
-                feedComment = state.currentFeed[idx],
+        items(items=state.currentFeed.toList()) { item ->
+            val parentComment = item.first
+            val childComments = item.second
+            CommentListItem(
+                feedComment = parentComment,
             )
+            childComments.forEach { childComment ->
+                CommentListItem(
+                    feedComment = childComment,
+                    isChild = true
+                )
+            }
+
         }
 
     }

@@ -46,11 +46,39 @@ class CommentViewModel @Inject constructor(
     {
         _uiState.update {
             val temp = arrayListOf<Comment>()
-            temp.addAll(it.currentFeed)
+            temp.addAll(it.currentFeed.keys)
+            it.currentFeed.values.forEach { x->
+                temp.addAll(x)
+            }
             temp.addAll(newFeed)
             temp.sortBy { x -> x.timestamp }
-            it.copy(currentFeed = temp)
+
+            val combinedComments = combineCommentAndChildren(temp)
+            it.copy(currentFeed = combinedComments)
         }
         Log.v(DebugTags.UITag.tag,"Current Comment feed = ${_uiState.value.currentFeed}")
+    }
+    private fun combineCommentAndChildren(commentFeed : ArrayList<Comment>): HashMap<Comment, ArrayList<Comment>> {
+        val commentBlocks = hashMapOf<Comment,ArrayList<Comment>>()
+        commentFeed.forEach {
+            if(it.parentCommentId == "")
+            {
+                if(!commentBlocks.containsKey(it))
+                {
+                    commentBlocks.put(it, arrayListOf<Comment>())
+                }
+            }
+        }
+
+        commentFeed.forEach {
+            if (it.parentCommentId != "")
+            {
+                val parentComment = commentBlocks.keys.first { x -> x.commentId == it.parentCommentId}
+                val currentChilds = commentBlocks[parentComment]
+                currentChilds!!.add(it)
+                commentBlocks.put(parentComment,currentChilds)
+            }
+        }
+        return commentBlocks
     }
 }

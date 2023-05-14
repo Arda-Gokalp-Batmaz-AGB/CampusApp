@@ -7,5 +7,5 @@ import com.arda.mainapp.auth.Resource
 data class CommentUiState(
     val isFeedRefreshing : Boolean = false,
     val feedFlow: Resource<ArrayList<Comment>>? = null,
-    val currentFeed: ArrayList<Comment> = arrayListOf(),
+    val currentFeed: HashMap<Comment,ArrayList<Comment>> = hashMapOf<Comment,ArrayList<Comment>>(),
 )
