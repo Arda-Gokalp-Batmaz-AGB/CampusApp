@@ -13,6 +13,7 @@
     <string name="jobpostings">Openings</string>
     <string name="follow">Follow</string>
     <string name="like">Like</string>
+    <string name="dislike">Dislike</string>
     <string name="comment">Comment</string>
     <string name="post">Post</string>
     <string name="groups">Groups</string>
