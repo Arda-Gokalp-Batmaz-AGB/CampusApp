@@ -20,7 +20,7 @@ private val LightColorPalette = lightColors(
     primaryVariant = Teal300,
     secondary = lightTextColor,
     background = bgColor2,
-    secondaryVariant = clickableColorLight,
+    secondaryVariant = textColor,
     error = errorColor
 )
 

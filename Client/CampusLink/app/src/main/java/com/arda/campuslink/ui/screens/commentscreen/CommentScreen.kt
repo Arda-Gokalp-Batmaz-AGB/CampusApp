@@ -19,19 +19,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.arda.campuslink.domain.model.Comment
-import com.arda.campuslink.domain.model.ExtendedUser
 import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.ui.components.*
-import com.arda.campuslink.ui.screens.homescreen.HomeViewModel
 import com.arda.campuslink.ui.screens.homescreen.OnBottomReached
-import com.arda.campuslink.ui.screens.profilescreen.ProfileViewModel
 import com.arda.campuslink.util.DebugTags
 import com.arda.mainapp.auth.Resource
+import androidx.compose.foundation.lazy.items
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.google.type.DateTime
-import androidx.compose.foundation.lazy.items
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -51,6 +47,10 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
         ) {
             if (openPost.value)//&& state.currentProfileUser != null)
             {
+                val commentViewmodel = hiltViewModel<CommentViewModel>()
+                val state by commentViewmodel.uiState.collectAsState()
+                commentViewmodel.setPost(feedPost = feedPost)
+
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize(),
@@ -58,11 +58,11 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
                         CommentTopBar(openPost)
                     },
                     bottomBar = {
-                        CreateCommentItem()
+                        CreateCommentItem(commentViewmodel,state)
                     }
                 )
                 {
-                    CommentBody(feedPost)
+                    CommentBody(feedPost,commentViewmodel,state)
                 }
             }
 
@@ -71,7 +71,7 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
 }
 
 @Composable
-fun CommentBody(currentPost: FeedPost) {
+fun CommentBody(currentPost: FeedPost, commentViewmodel: CommentViewModel, state: CommentUiState) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,17 +80,21 @@ fun CommentBody(currentPost: FeedPost) {
         elevation = 5.dp,
     )
     {
-            CommentSection(currentPost)
+            CommentSection(currentPost,commentViewmodel,state)
     }
 
 
 }
 
 @Composable
-fun CommentSection(currentPost: FeedPost) {
-    val commentViewmodel = hiltViewModel<CommentViewModel>()
-    val state by commentViewmodel.uiState.collectAsState()
+fun CommentSection(currentPost: FeedPost, commentViewmodel: CommentViewModel, state: CommentUiState) {
+
+
+
+
     val listState = rememberLazyListState()
+    commentViewmodel.getNewlyAddedCommentsByUser()
+
     state.feedFlow?.let {
         when (it) {
             is Resource.Failure<*> -> {
@@ -108,41 +112,50 @@ fun CommentSection(currentPost: FeedPost) {
             }
         }
     }
+    val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isFeedRefreshing)
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState
-    )
-    {
-        item {
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight())
-            {
-                FeedItem(
-                    feedPost = currentPost,
-                )
+    SwipeRefresh(
+        state = swipeRefreshState,
+        onRefresh = { commentViewmodel.refreshCurrentFeed() }) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState
+        )
+        {
+            item {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight())
+                {
+                    FeedItem(
+                        feedPost = currentPost,
+                        commentViewModel = commentViewmodel
+                    )
+                }
             }
-        }
-        items(items=state.currentFeed.toList()) { item ->
-            val parentComment = item.first
-            val childComments = item.second
-            CommentListItem(
-                feedComment = parentComment,
-            )
-            childComments.forEach { childComment ->
+            items(items=state.currentFeed.toList()) { item ->
+                val parentComment = item.first
+                val childComments = item.second
                 CommentListItem(
-                    feedComment = childComment,
-                    isChild = true
+                    feedComment = parentComment,
+                    commentViewModel =commentViewmodel,
                 )
+                childComments.forEach { childComment ->
+                    CommentListItem(
+                        feedComment = childComment,
+                        commentViewModel =commentViewmodel,
+                        isChild = true
+                    )
+                }
+
             }
 
         }
+        listState.OnBottomReached(buffer = 2) {
+            commentViewmodel.fetchNewComments()
+        }
+    }
 
-    }
-    listState.OnBottomReached(buffer = 2) {
-        commentViewmodel.fetchNewComments(currentPost)
-    }
 
 
 }

@@ -14,4 +14,7 @@ class UserCommentUseCase @Inject constructor(
     suspend fun fetchNewComments(post: FeedPost): Resource<ArrayList<Comment>> {
         return commentRepository.getPostComments(post)
     }
+    fun getNewlyAddedCommentsByUser(): ArrayList<Comment> {
+        return commentRepository.getNewlyAddedCommentsByUser()
+    }
 }

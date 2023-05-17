@@ -37,6 +37,7 @@ import com.arda.campuslink.R
 import com.arda.campuslink.domain.model.Comment
 import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.ui.screens.commentscreen.CommentScreen
+import com.arda.campuslink.ui.screens.commentscreen.CommentViewModel
 import com.arda.campuslink.ui.screens.profilescreen.ProfileScreen
 import com.arda.campuslink.util.DebugTags
 import com.arda.campuslink.util.LangStringUtil
@@ -48,7 +49,8 @@ import com.arda.campuslink.util.LangStringUtil
 @Composable
 fun CommentListItem(
     feedComment: Comment,
-    isChild: Boolean = false
+    commentViewModel: CommentViewModel,
+    isChild: Boolean = false,
 ) {
     var padding = 0.dp
     if (isChild) {
@@ -95,7 +97,7 @@ fun CommentListItem(
                     color = MaterialTheme.colors.primary,
                     overflow = TextOverflow.Ellipsis
                 )
-                CommentItemOptions(feedComment = feedComment)
+                CommentItemOptions(feedComment = feedComment,commentViewModel = commentViewModel)
 
             }
         }
@@ -127,7 +129,7 @@ fun ReplyProfileImage(
 
 
 @Composable
-fun CommentItemOptions(modifier: Modifier = Modifier, feedComment: Comment) {
+fun CommentItemOptions(modifier: Modifier = Modifier, feedComment: Comment,commentViewModel: CommentViewModel,) {
     Column(modifier = modifier.padding(4.dp)) {
 
         CommentLikesReactions(
@@ -153,15 +155,15 @@ fun CommentItemOptions(modifier: Modifier = Modifier, feedComment: Comment) {
         ) {
             CommentItem(LangStringUtil.getLangString(R.string.like), Icons.Filled.ThumbUp)
             {
-
+                commentViewModel.interactWithComment(feedComment,"like")
             }
             CommentItem(LangStringUtil.getLangString(R.string.dislike), Icons.Filled.ThumbDown)
             {
-
+                commentViewModel.interactWithComment(feedComment,"dislike")
             }
             CommentItem(LangStringUtil.getLangString(R.string.comment), Icons.Filled.Comment)
             {
-                // SET ID
+               commentViewModel.updateFocusedComponent(feedComment.commentId)
             }
         }
     }

@@ -4,6 +4,7 @@ import android.util.Log
 import com.arda.campuslink.data.DUMMYDATA
 import com.arda.campuslink.domain.model.Comment
 import com.arda.campuslink.domain.model.FeedPost
+import com.arda.campuslink.domain.model.NewComment
 import com.arda.campuslink.domain.repository.CommentRepository
 import com.arda.campuslink.domain.repository.PostRepository
 import com.arda.campuslink.util.DebugTags
@@ -20,8 +21,32 @@ class CommentRepositoryImpl @Inject constructor(
     private val firebaseFunctions: FirebaseFunctions,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : CommentRepository {
-    override suspend fun createComment(comment: Comment): Resource<Comment> {
-        TODO("Not yet implemented")
+    val userCommentFeed : ArrayList<Comment> = arrayListOf()
+    override suspend fun createComment(newComment: NewComment): Resource<Comment> =
+        withContext(
+            dispatcher
+        ) {
+        return@withContext try {
+            //val result = auth.signInWithEmailAndPassword(email, password).await()
+            //Return edilen postu FeedPost Yap öyle al
+            // Postu databaseye ekle sonra databaseden dönen değeri feedpost yap geri dönder
+            //hashtag bulma arkaplan
+            val comment = Comment(
+                commentId = "qwex",
+                postId = newComment.postID,
+                parentCommentId = newComment.parentID,
+                user = newComment.user,
+                description = newComment.description,
+                likes = 0,
+                dislikes = 0,
+                timestamp = newComment.timestamp
+            )
+            userCommentFeed.add(comment)
+            Resource.Sucess(comment)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Failure<Exception>(e)
+        }
     }
 
     override suspend fun interactComment(comment: Comment): Resource<Comment> {
@@ -75,5 +100,12 @@ class CommentRepositoryImpl @Inject constructor(
             e.printStackTrace()
             Resource.Failure<Exception>(e)
         }
+    }
+
+    override fun getNewlyAddedCommentsByUser(): ArrayList<Comment> {
+        val comments = arrayListOf<Comment>()
+        comments.addAll(userCommentFeed)
+        userCommentFeed.clear()
+        return comments
     }
 }
