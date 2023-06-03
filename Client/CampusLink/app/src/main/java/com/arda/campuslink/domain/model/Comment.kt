@@ -1,6 +1,7 @@
 package com.arda.campuslink.domain.model
 
 import java.util.*
+import kotlin.collections.ArrayList
 
 data class Comment(
     val postId : String,
@@ -8,8 +9,8 @@ data class Comment(
     val commentId : String,
     val user: User,
     val description: String,
-    var likes: Int,
-    var dislikes: Int,
+    var likedUsers: ArrayList<String>,
+    var disLikedUsers: ArrayList<String>,
     val timestamp: Long,
     )
 {

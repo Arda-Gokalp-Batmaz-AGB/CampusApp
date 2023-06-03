@@ -18,7 +18,7 @@ object DUMMYDATA{
         ),
         User(
             "hahaha",
-            userName = "Android Developers",
+            userName = "Batmaz Arda",
             jobTitle = "Comp Student",
             avatar = Uri.parse("https://lh3.googleusercontent.com/a/AGNmyxbeQE48SXrpwk7ODnkYujSFzgZHwcjxPoD9R4s5UA=s96-c") ///ImageProcessUtils.convertBitmapToUri(ImageProcessUtils.getBitmapFromImage(R.drawable.logo)),
         )
@@ -27,7 +27,7 @@ object DUMMYDATA{
         FeedPost(
             postId = "asasdsaddasd",
             user = dummyUserData[1],
-            description = "#AndroidDevSummit is back, and this year we're coming..",
+            description = "Let's describe is a app that aims to help learning disordered children",
             image = R.drawable.logo,
             likes = 350,
             comments = 3,
@@ -40,7 +40,7 @@ object DUMMYDATA{
         FeedPost(
             postId = "asdasd",
             user = dummyUserData[1],
-            description = "Guia para modularização de Apps Android.",
+            description = "#Campuslink is the best.",
             image = null,
             likes = 5,
             comments = 2,

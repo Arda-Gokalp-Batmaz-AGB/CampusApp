@@ -37,8 +37,8 @@ class CommentRepositoryImpl @Inject constructor(
                 parentCommentId = newComment.parentID,
                 user = newComment.user,
                 description = newComment.description,
-                likes = 0,
-                dislikes = 0,
+                likedUsers = arrayListOf<String>(),
+                disLikedUsers = arrayListOf<String>(),
                 timestamp = newComment.timestamp
             )
             userCommentFeed.add(comment)
@@ -69,8 +69,8 @@ class CommentRepositoryImpl @Inject constructor(
                     commentId = "asd",
                     user=post.user,
                     description = "asdsadasdsdasdas",
-                    likes = 5,
-                    dislikes = 9,
+                    likedUsers = arrayListOf("qwe","safsaf","sadasdsad"),
+                    disLikedUsers = arrayListOf("fa","aas"),
                     timestamp = System.currentTimeMillis()
                 ),
                 Comment(
@@ -79,8 +79,8 @@ class CommentRepositoryImpl @Inject constructor(
                     commentId = "saf",
                     user=post.user,
                     description = "asdsadasdsdasdas",
-                    likes = 5,
-                    dislikes = 9,
+                    likedUsers = arrayListOf("qwe",),
+                    disLikedUsers = arrayListOf("fa"),
                     timestamp = System.currentTimeMillis()
                 ),
                 Comment(
@@ -89,8 +89,8 @@ class CommentRepositoryImpl @Inject constructor(
                     commentId = "fr",
                     user=post.user,
                     description = "asdsadasdsdasdsadsadsadas",
-                    likes = 0,
-                    dislikes = 0,
+                    likedUsers = arrayListOf("qwe",),
+                    disLikedUsers = arrayListOf("fa"),
                     timestamp = System.currentTimeMillis()
                 )
             )
