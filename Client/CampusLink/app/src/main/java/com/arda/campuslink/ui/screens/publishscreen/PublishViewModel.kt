@@ -5,9 +5,10 @@ import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.domain.usecase.CreatePostUseCase
 import com.arda.campuslink.domain.usecase.LoggedUserUseCase
-import com.arda.campuslink.ui.screens.leftbarpopup.LeftBarPopUpUiState
+import com.arda.campuslink.domain.usecase.UserPostFeedUseCase
 import com.arda.campuslink.util.DebugTags
 import com.arda.mainapp.auth.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class PublishViewModel @Inject constructor(
     private val createPostUseCase: CreatePostUseCase,
-    private val loggedUserUseCase: LoggedUserUseCase
+    private val loggedUserUseCase: LoggedUserUseCase,
+    private val userPostFeedUseCase: UserPostFeedUseCase
 ) : ViewModel(), LifecycleObserver {
     private val _uiState = MutableStateFlow(PublishUiState())
     val uiState: StateFlow<PublishUiState> = _uiState.asStateFlow()
@@ -43,6 +45,10 @@ class PublishViewModel @Inject constructor(
         }
     }
 
+    fun addPostToFeed(post: FeedPost)
+    {
+        userPostFeedUseCase.addPostToFeed(post)
+    }
     fun updateDescription(textValue: String) {
         _uiState.update {
             it.copy(description = textValue)

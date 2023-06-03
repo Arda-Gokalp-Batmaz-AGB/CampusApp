@@ -4,17 +4,18 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 data class FeedPost(
-    val postId : String,
+    val postId: String,
     val user: User,
     val description: String,
     val image: Int?,
-    var likes: Int,
+    var likedUsers: ArrayList<String>,
+    var disLikedUsers: ArrayList<String>,
     val comments: Int,
     val shares: Int,
-    val views : Int,
+    val views: Int,
     val timestamp: Long,
-    val hashTags: Array<String>,
-    val priority : Int = 1,
+    val hashTags: ArrayList<String>,
+    val priority: Int = 1,
 ) {
 
     fun timeAgo(): String {

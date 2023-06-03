@@ -5,7 +5,8 @@ import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.domain.model.NewPost
 import com.arda.campuslink.domain.repository.PostRepository
 import com.arda.mainapp.auth.Resource
-import com.google.type.DateTime
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 class CreatePostUseCase @Inject constructor(
@@ -18,14 +19,20 @@ class CreatePostUseCase @Inject constructor(
             user = loggedUserUseCase.getMinProfileOfCurrentUser(),
             description = description,
             image = image,
-            hashTags = findTags(),
+            hashTags = findTags(description),
             timestamp = System.currentTimeMillis()
         )
 
         return postRepository.createPost(post)
     }
 
-    private fun findTags(): Array<String> {
-        return arrayOf()
+    private fun findTags(description : String): Array<String> {
+        val MY_PATTERN: Pattern = Pattern.compile("#(\\S+)")
+        val mat: Matcher = MY_PATTERN.matcher(description)
+        val strs = arrayListOf<String>()
+        while (mat.find()) {
+            strs.add(mat.group(1))
+        }
+        return strs.toTypedArray()
     }
 }
