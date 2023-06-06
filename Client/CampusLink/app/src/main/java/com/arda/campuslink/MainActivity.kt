@@ -20,6 +20,7 @@ import com.arda.campuslink.ui.screens.mainscreen.MainScreen
 import com.arda.campuslink.ui.theme.CampusLinkTheme
 import com.arda.campuslink.ui.theme.ThemeController
 import com.arda.campuslink.util.GoogleOneTapClient
+import com.google.accompanist.insets.ProvideWindowInsets
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -29,19 +30,23 @@ class MainActivity : ComponentActivity() {
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         installSplashScreen()
         setContent {
-            CampusLinkTheme(ThemeController.themeIsDark) {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background,
-                ) {
-                    val context = LocalContext.current
-                    GoogleOneTapClient.initGoogleLoginAuth(context)
-                    MainScreen()
+                CampusLinkTheme(ThemeController.themeIsDark) {
+                    ProvideWindowInsets {
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colors.background,
+                        ) {
+                            val context = LocalContext.current
+                            GoogleOneTapClient.initGoogleLoginAuth(context)
+                            MainScreen()
+                        }
+                    }
+
                 }
-            }
         }
     }
 }
+
 internal fun Context.findActivity(): Activity {
     var context = this
     while (context is ContextWrapper) {

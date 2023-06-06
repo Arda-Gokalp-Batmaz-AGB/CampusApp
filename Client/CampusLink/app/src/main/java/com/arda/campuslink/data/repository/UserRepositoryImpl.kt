@@ -9,6 +9,7 @@ import com.arda.campuslink.util.ImageProcessUtils
 import com.arda.mainapp.auth.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -18,6 +19,7 @@ import javax.inject.Singleton
 
 @Singleton
 class UserRepositoryImpl @Inject constructor(
+    private val firebaseFirestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : UserRepository {

@@ -22,7 +22,8 @@ import javax.inject.Inject
 class CommentViewModel @Inject constructor(
     private val loggedUserUseCase: LoggedUserUseCase,
     private val userCommentUseCase: UserCommentUseCase,
-    private val createCommentUseCase: CreateCommentUseCase
+    private val createCommentUseCase: CreateCommentUseCase,
+    private val userInteractionUseCase: UserInteractionUseCase
 ) : ViewModel(), LifecycleObserver {
     private val _uiState = MutableStateFlow(CommentUiState())
     val uiState: StateFlow<CommentUiState> = _uiState.asStateFlow()
@@ -110,11 +111,60 @@ class CommentViewModel @Inject constructor(
     }
 
     fun interactWithComment(comment: Comment, type: String) = viewModelScope.launch {
+        var commentToUpdate: Comment? = null
+        val currentFeed = hashMapOf<Comment,ArrayList<Comment>>()
+        currentFeed.putAll(_uiState.value.currentFeed)
+        currentFeed.keys.sortedBy { x -> x.timestamp }
+        commentToUpdate = currentFeed.keys.find { it.commentId == comment.commentId }
+        if (commentToUpdate == null) {
+            currentFeed.values?.let {
+                currentFeed.values.forEach { x ->
+                    commentToUpdate = x.find { it.commentId == comment.commentId }
+                }
+            }
+        }
         if (type == "like") {
+            commentToUpdate?.let {
+                if(it.likedUsers.contains(loggedUserUseCase.getMinProfileOfCurrentUser().UID))
+                {
+                    it.likedUsers.remove(loggedUserUseCase.getMinProfileOfCurrentUser().UID)
+                    removeLikeDislike(it)
+                }
+                else
+                {
+                    it.disLikedUsers.remove(loggedUserUseCase.getMinProfileOfCurrentUser().UID)
+                    it.likedUsers.add(loggedUserUseCase.getMinProfileOfCurrentUser().UID)
+                    likeComment(it)
+                }
+            }
+
+            Log.v(DebugTags.UITag.tag, "Like Count increased")
 
         } else if (type == "dislike") {
+            commentToUpdate?.let {
+                if(it.disLikedUsers.contains(loggedUserUseCase.getMinProfileOfCurrentUser().UID))
+                {
+                    it.disLikedUsers.remove(loggedUserUseCase.getMinProfileOfCurrentUser().UID)
+                    removeLikeDislike(it)
+                }
+                else
+                {
+                    it.likedUsers.remove(loggedUserUseCase.getMinProfileOfCurrentUser().UID)
+                    it.disLikedUsers.add(loggedUserUseCase.getMinProfileOfCurrentUser().UID)
+                    disLikeComment(it)
+
+                }
+            }
+            Log.v(DebugTags.UITag.tag, "DISLike Count increased")
 
         }
+        _uiState.update {
+            it.copy(currentFeed = currentFeed)
+        }
+    }
+
+    fun updateCommentState() {
+
     }
 
     fun setPost(feedPost: FeedPost) {
@@ -124,32 +174,46 @@ class CommentViewModel @Inject constructor(
     }
 
 
-
-    fun refreshCurrentFeed()
-    {
+    fun refreshCurrentFeed() {
         resetFeed()
         fetchNewComments()
         _uiState.update {
             it.copy(isFeedRefreshing = false)
         }
-        Log.v(DebugTags.UITag.tag,"Feed Refreshed")
+        Log.v(DebugTags.UITag.tag, "Feed Refreshed")
 
     }
-    private fun resetFeed()
+
+    fun dismissStates()
     {
+        Log.v(DebugTags.UITag.tag, "CommentViewModel States Dismissed")
         _uiState.update {
-            val temp = hashMapOf<Comment,ArrayList<Comment>>()
+            CommentUiState()
+        }
+    }
+    private fun resetFeed() {
+        _uiState.update {
+            val temp = hashMapOf<Comment, ArrayList<Comment>>()
             it.copy(currentFeed = temp, isFeedRefreshing = true)
         }
     }
-    fun getNewlyAddedCommentsByUser()
-    {
+
+    fun getNewlyAddedCommentsByUser() {
         val posts = userCommentUseCase.getNewlyAddedCommentsByUser()
-        if(!posts.isEmpty())
-        {
-            Log.v(DebugTags.UITag.tag,"Newly added posts added to the feed")
+        if (!posts.isEmpty()) {
+            Log.v(DebugTags.UITag.tag, "Newly added posts added to the feed")
 
             updateCurrentFeed(posts)
         }
+    }
+    private fun likeComment(comment: Comment) = viewModelScope.launch {
+        val result = userInteractionUseCase.likeComment(comment = comment)
+    }
+    private fun disLikeComment(comment: Comment) = viewModelScope.launch {
+        val result = userInteractionUseCase.disLikeComment(comment = comment)
+
+    }
+    private fun removeLikeDislike(comment: Comment) = viewModelScope.launch {
+        val result = userInteractionUseCase.resetCommentInteraction(comment = comment)
     }
 }

@@ -24,21 +24,30 @@ import com.arda.campuslink.ui.navigation.NavigationScreen
 @Composable
 fun MainScreen() {
     val authViewmodel = hiltViewModel<AuthViewModel>()
-    val mainScreenViewmodel = hiltViewModel<MainScreenViewModel>()
+//    val mainScreenViewmodel = hiltViewModel<MainScreenViewModel>()
     val navController = rememberNavController()
     val state = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     Scaffold(
         scaffoldState = state,
         drawerContent = {
-            LeftBarPopUp()
+            if ((navController.currentBackStackEntryAsState().value?.destination?.route.toString()
+                        != NavigationScreen.Login.route && authViewmodel.currentUser != null)
+            ) {
+                LeftBarPopUp()
+            }
         },
         topBar = {
-            TopBar(scope, state,mainScreenViewmodel)
+            if ((navController.currentBackStackEntryAsState().value?.destination?.route.toString()
+                        != NavigationScreen.Login.route && authViewmodel.currentUser != null )
+            ) {
+                val mainScreenViewmodel = hiltViewModel<MainScreenViewModel>()
+                TopBar(scope, state,mainScreenViewmodel)
+            }
         },
         bottomBar = {
             if ((navController.currentBackStackEntryAsState().value?.destination?.route.toString()
-                        != NavigationScreen.Login.route)
+                        != NavigationScreen.Login.route && authViewmodel.currentUser != null)
             ) {
                 BottomBar(navController = navController)
             }

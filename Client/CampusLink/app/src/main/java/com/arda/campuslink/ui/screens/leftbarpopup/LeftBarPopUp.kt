@@ -79,7 +79,7 @@ fun LeftBarPopUp() {
                 modifier = Modifier.padding(top = 16.dp)
             )
             Text(
-                text = "Eventos",
+                text = "Projects",
                 style = TextStyle(color = Color.Black, fontSize = 16.sp),
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(top = 16.dp)

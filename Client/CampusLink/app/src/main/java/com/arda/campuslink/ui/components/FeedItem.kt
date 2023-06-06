@@ -31,20 +31,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+
 import coil.compose.rememberImagePainter
 import com.arda.campuslink.domain.model.FeedPost
-import kotlinx.coroutines.CoroutineScope
 import com.arda.campuslink.R
+import com.arda.campuslink.domain.model.Comment
+import com.arda.campuslink.ui.screens.commentscreen.CommentScreen
+import com.arda.campuslink.ui.screens.commentscreen.CommentViewModel
+import com.arda.campuslink.ui.screens.homescreen.HomeViewModel
 import com.arda.campuslink.ui.screens.profilescreen.ProfileScreen
 import com.arda.campuslink.util.LangStringUtil
 
 @Composable
 fun FeedItem(
     feedPost: FeedPost,
-    coroutineScope: CoroutineScope,
-    navController: NavController
+    commentViewModel: CommentViewModel? = null,
+    homeViewModel: HomeViewModel
+    // coroutineScope: CoroutineScope,
+    // navController: NavController
 ) {
+
     val constraints = ConstraintSet {
         val postTopBar = createRefFor("post_top_bar")
         val postFollowButton = createRefFor("post_follow_button")
@@ -77,20 +84,26 @@ fun FeedItem(
     ConstraintLayout(
         constraints, modifier = Modifier
             .fillMaxSize()
-            .padding(top = 8.dp).background(color = Color.White)
+            .padding(top = 8.dp)
+            .background(color = Color.White)
     ) {
         PostTopItem(
             feedPost,
             modifier = Modifier.layoutId("post_top_bar"),
-            coroutineScope,
-            navController
+            //  coroutineScope,
+            // navController
         )
         FollowButton(modifier = Modifier.layoutId("post_follow_button"))
         PostTextAndImage(
             feedPost = feedPost,
             modifier = Modifier.layoutId("post_text_and_image")
         )
-        PostOptions(feedPost = feedPost, modifier = Modifier.layoutId("post_options"))
+        PostOptions(
+            feedPost = feedPost,
+            commentViewModel = commentViewModel,
+            modifier = Modifier.layoutId("post_options"),
+            homeViewModel = homeViewModel
+        )
     }
 
 }
@@ -99,15 +112,16 @@ fun FeedItem(
 fun PostTopItem(
     feedPost: FeedPost,
     modifier: Modifier = Modifier,
-    coroutineScope: CoroutineScope,
-    navController: NavController
+    //coroutineScope: CoroutineScope,
+    //navController: NavController
 ) {
     val openProfile = remember { mutableStateOf(false) }
     if (openProfile.value) {
-        feedPost?.let { ProfileScreen(openProfile,user = feedPost.user) }
+        feedPost?.let { ProfileScreen(openProfile, user = feedPost.user) }
     }
     Row(
-        modifier = modifier.padding(top = 8.dp)
+        modifier = modifier
+            .padding(top = 8.dp)
             .clickable {
                 openProfile.value = true
             },
@@ -117,7 +131,8 @@ fun PostTopItem(
         Image(
             painter = rememberImagePainter(feedPost.user.avatar),
             contentDescription = "",
-            modifier = Modifier.padding(start = 8.dp)
+            modifier = Modifier
+                .padding(start = 8.dp)
                 .size(40.dp)
                 .clip(shape = RoundedCornerShape(25.dp)),
             contentScale = ContentScale.Crop,
@@ -160,9 +175,10 @@ fun PostTopItem(
 @Composable
 private fun FollowButton(modifier: Modifier = Modifier) {
     Row(
-        modifier = modifier.padding(end= 8.dp, top = 8.dp)
+        modifier = modifier
+            .padding(end = 8.dp, top = 8.dp)
             .clickable {
-                       //To-DO Follow
+                //To-DO Follow
             },
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -204,15 +220,19 @@ fun PostTextAndImage(modifier: Modifier = Modifier, feedPost: FeedPost) {
 }
 
 @Composable
-fun PostOptions(modifier: Modifier = Modifier, feedPost: FeedPost) {
+fun PostOptions(
+    modifier: Modifier = Modifier,
+    commentViewModel: CommentViewModel?,
+    feedPost: FeedPost,
+    homeViewModel: HomeViewModel
+) {
     Column(modifier = modifier.padding(4.dp)) {
 
-        LikesReactions(
+        postLikesReactions(
             modifier = Modifier.padding(top = 8.dp),
             icons = listOf(
                 Icons.Filled.ThumbUp,
-                Icons.Filled.SentimentSatisfied,
-                Icons.Filled.EmojiObjects
+
             ),
             feedPost = feedPost,
         )
@@ -228,20 +248,46 @@ fun PostOptions(modifier: Modifier = Modifier, feedPost: FeedPost) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            val openComments = remember { mutableStateOf(false) }
+            if (openComments.value) {
+                feedPost?.let {
+                    CommentScreen(
+                        openPost = openComments,
+                        feedPost = feedPost,
+                        homeViewModel = homeViewModel
+                    )
+                }
+            }
             PostItem(LangStringUtil.getLangString(R.string.like), Icons.Filled.ThumbUp)
+            {
+                homeViewModel.interactWithPost(feedPost,"like")
+            }
+            PostItem(LangStringUtil.getLangString(R.string.dislike), Icons.Filled.ThumbDown)
+            {
+                homeViewModel.interactWithPost(feedPost,"dislike")
+
+            }
             PostItem(LangStringUtil.getLangString(R.string.comment), Icons.Filled.Comment)
-            PostItem(LangStringUtil.getLangString(R.string.Share), Icons.Filled.Share)
-            PostItem(LangStringUtil.getLangString(R.string.Send), Icons.Filled.Send)
+            {
+                if (commentViewModel == null) {
+                    openComments.value = true
+                } else {
+                    commentViewModel.updateFocusedComponent(feedPost.postId)
+                }
+            }
+//            PostItem(LangStringUtil.getLangString(R.string.Share), Icons.Filled.Share)
+//            PostItem(LangStringUtil.getLangString(R.string.Send), Icons.Filled.Send)
         }
     }
 }
 
 @Composable
-private fun PostItem(title: String, icon: ImageVector) {
+private fun PostItem(title: String, icon: ImageVector, triggerFunc: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.clickable { //TO-DO Make them interactive
-             }
+            triggerFunc.invoke()
+        }
     ) {
         Icon(
             icon,
@@ -255,61 +301,49 @@ private fun PostItem(title: String, icon: ImageVector) {
         )
     }
 }
-
 @Composable
-fun LikesReactions(modifier: Modifier = Modifier, icons: List<ImageVector>, feedPost: FeedPost) {
+fun postLikesReactions(
+    modifier: Modifier = Modifier,
+    icons: List<ImageVector>,
+    feedPost: FeedPost
+) {
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            LazyRow {
-                items(icons.size) { idx ->
-                    Image(
-                        icons[idx],
-                        contentDescription = "",
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
-            }
+        Row()
+        {
+            Image(
+                Icons.Filled.ThumbUp,
+                contentDescription = "",
+                modifier = Modifier.size(20.dp),
+            )
             Text(
-                text = feedPost.likes.toString(), color = Color.DarkGray,
+                text = feedPost.likedUsers.size.toString(), color = Color.DarkGray,
                 modifier = Modifier.padding(start = 8.dp),
-                style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold
+                style = TextStyle(
+                    fontSize = 10.sp, fontWeight = FontWeight.Bold
                 )
             )
         }
-        Row {
-            if (feedPost.comments != 0) {
-                Text(
-                    text = "${feedPost.comments} ${LangStringUtil.getLangString(R.string.comment)}"
-                            + getLikesOrCommentsString(
-                        feedPost.likes
-                    ),
-                    color = Color.DarkGray,
-                    style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
-                )
-            }
-            Text(
-                text = " • ", color = Color.DarkGray,
-                style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        Row()
+        {
+            Image(
+                Icons.Filled.ThumbDown,
+                contentDescription = "",
+                modifier = Modifier.size(20.dp),
             )
-            if (feedPost.shares != 0) {
-                Text(
-                    text = "${feedPost.shares} ${LangStringUtil.getLangString(R.string.Share)}"
-                            + getLikesOrCommentsString(
-                        feedPost.shares
-                    ), color = Color.DarkGray,
-                    style = TextStyle(fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            Text(
+                text = feedPost.disLikedUsers.size.toString(), color = Color.DarkGray,
+                modifier = Modifier.padding(start = 8.dp),
+                style = TextStyle(
+                    fontSize = 10.sp, fontWeight = FontWeight.Bold
                 )
-            }
+            )
         }
     }
 }
-
 fun getLikesOrCommentsString(numberOfLikesOrSharings: Int): String {
     return if (numberOfLikesOrSharings != 1) "s" else ""
 }

@@ -13,18 +13,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.arda.campuslink.ui.components.FeedItem
-import com.arda.campuslink.ui.screens.mainscreen.MainScreenViewModel
 import com.arda.campuslink.util.DebugTags
 import com.arda.mainapp.auth.Resource
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     navController: NavController,
     coroutineScope: CoroutineScope,
+    scroolTop: Boolean = false
 ) {
     val homeViewmodel = hiltViewModel<HomeViewModel>()
     val state by homeViewmodel.uiState.collectAsState()
@@ -33,7 +34,17 @@ fun HomeScreen(
         Modifier
 
     ) {
-        Log.v(DebugTags.UITag.tag, "Home Triggered")
+        if (scroolTop) {
+            LaunchedEffect(Unit)
+            {
+                Log.v(DebugTags.UITag.tag, "Scrooled to TOP")
+                coroutineScope.launch {
+                    listState.animateScrollToItem(0)
+                }
+            }
+        }
+
+
 //        homeViewmodel.refreshCurrentFeed()
         homeViewmodel.getNewlyAddedPostsByUser()
         state.feedFlow?.let {
@@ -46,7 +57,7 @@ fun HomeScreen(
                 is Resource.Sucess -> {
                     LaunchedEffect(Unit)
                     {
-                        Log.v(DebugTags.UITag.tag, "Feed Fetched Sucessfully!!")
+//                        Log.v(DebugTags.UITag.tag, "Feed Fetched Sucessfully!!")
                         homeViewmodel.updateCurrentFeed(it.result)
                     }
 
@@ -68,13 +79,11 @@ fun HomeScreen(
                 items(state.currentFeed.size) { idx ->
                     FeedItem(
                         feedPost = state.currentFeed[idx],
-                        coroutineScope = coroutineScope,
-                        navController = navController
+                        homeViewModel = homeViewmodel
                     )
                 }
 
             }
-            //if(state.currentFeed.size != 0)
             listState.OnBottomReached(buffer = 3) {
                 homeViewmodel.fetchNewPosts()
             }
@@ -98,8 +107,8 @@ fun LazyListState.OnBottomReached(
             val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
                 ?: return@derivedStateOf true
 
-            Log.v(DebugTags.UITag.tag, "lastVisibleItem = ${lastVisibleItem.index}")
-            Log.v(DebugTags.UITag.tag, "Layout Info = ${layoutInfo.totalItemsCount}")
+//            Log.v(DebugTags.UITag.tag, "lastVisibleItem = ${lastVisibleItem.index}")
+//            Log.v(DebugTags.UITag.tag, "Layout Info = ${layoutInfo.totalItemsCount}")
 
             // subtract buffer from the total items
             lastVisibleItem.index >= layoutInfo.totalItemsCount - 1 - buffer

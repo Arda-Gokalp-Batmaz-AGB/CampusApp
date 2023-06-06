@@ -59,7 +59,7 @@ fun CommentListItem(
     Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(start = padding,)
+            .padding(start = padding)
     )
     {
         ReplyProfileImage(
@@ -97,7 +97,7 @@ fun CommentListItem(
                     color = MaterialTheme.colors.primary,
                     overflow = TextOverflow.Ellipsis
                 )
-                CommentItemOptions(feedComment = feedComment,commentViewModel = commentViewModel)
+                CommentItemOptions(feedComment = feedComment, commentViewModel = commentViewModel)
 
             }
         }
@@ -129,15 +129,17 @@ fun ReplyProfileImage(
 
 
 @Composable
-fun CommentItemOptions(modifier: Modifier = Modifier, feedComment: Comment,commentViewModel: CommentViewModel,) {
+fun CommentItemOptions(
+    modifier: Modifier = Modifier,
+    feedComment: Comment,
+    commentViewModel: CommentViewModel,
+) {
     Column(modifier = modifier.padding(4.dp)) {
 
         CommentLikesReactions(
             modifier = Modifier.padding(top = 8.dp),
             icons = listOf(
                 Icons.Filled.ThumbUp,
-                Icons.Filled.SentimentSatisfied,
-                Icons.Filled.EmojiObjects
             ),
             feedComment = feedComment,
         )
@@ -153,17 +155,18 @@ fun CommentItemOptions(modifier: Modifier = Modifier, feedComment: Comment,comme
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            //yeni viewmodel lazm
             CommentItem(LangStringUtil.getLangString(R.string.like), Icons.Filled.ThumbUp)
             {
-                commentViewModel.interactWithComment(feedComment,"like")
+                commentViewModel.interactWithComment(feedComment, "like")
             }
             CommentItem(LangStringUtil.getLangString(R.string.dislike), Icons.Filled.ThumbDown)
             {
-                commentViewModel.interactWithComment(feedComment,"dislike")
+                commentViewModel.interactWithComment(feedComment, "dislike")
             }
             CommentItem(LangStringUtil.getLangString(R.string.comment), Icons.Filled.Comment)
             {
-               commentViewModel.updateFocusedComponent(feedComment.commentId)
+                commentViewModel.updateFocusedComponent(feedComment.commentId)
             }
         }
     }
@@ -199,39 +202,37 @@ fun CommentLikesReactions(
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(30.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            LazyRow {
-                items(icons.size) { idx ->
-                    Image(
-                        icons[idx],
-                        contentDescription = "",
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
-            }
+        Row()
+        {
+            Image(
+                Icons.Filled.ThumbUp,
+                contentDescription = "",
+                modifier = Modifier.size(20.dp),
+            )
             Text(
-                text = feedComment.likes.toString(), color = Color.DarkGray,
+                text = feedComment.likedUsers.size.toString(), color = Color.DarkGray,
                 modifier = Modifier.padding(start = 8.dp),
                 style = TextStyle(
                     fontSize = 10.sp, fontWeight = FontWeight.Bold
                 )
             )
         }
-//        Row {
-//            if (feedComment.comments != 0) {
-//                Text(
-//                    text = "${feedComment.comments} ${LangStringUtil.getLangString(R.string.comment)}"
-//                            + getLikesOrCommentsString(
-//                        feedComment.likes
-//                    ),
-//                    color = Color.DarkGray,
-//                    style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold)
-//                )
-//            }
-//        }
+        Row()
+        {
+            Image(
+                Icons.Filled.ThumbDown,
+                contentDescription = "",
+                modifier = Modifier.size(20.dp),
+            )
+            Text(
+                text = feedComment.disLikedUsers.size.toString(), color = Color.DarkGray,
+                modifier = Modifier.padding(start = 8.dp),
+                style = TextStyle(
+                    fontSize = 10.sp, fontWeight = FontWeight.Bold
+                )
+            )
+        }
     }
 }

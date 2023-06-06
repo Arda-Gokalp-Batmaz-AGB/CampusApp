@@ -11,6 +11,7 @@ import com.arda.campuslink.domain.repository.UserRepository
 import com.arda.campuslink.domain.usecase.AuthenticationUseCase
 import com.arda.campuslink.domain.usecase.LoggedUserUseCase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.auth.User
 import com.google.firebase.functions.FirebaseFunctions
 import dagger.Module
@@ -25,21 +26,27 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun AuthRepository(
+        firebaseFirestore: FirebaseFirestore,
         auth: FirebaseAuth,
-    ): AuthRepository = AuthRepositoryImpl(auth)
+    ): AuthRepository = AuthRepositoryImpl(firebaseFirestore,auth)
     @Singleton
     @Provides
     fun UserRepository(
+        firebaseFirestore: FirebaseFirestore,
         auth: FirebaseAuth,
-    ): UserRepository = UserRepositoryImpl(auth)
+    ): UserRepository = UserRepositoryImpl(firebaseFirestore,auth)
     @Singleton
     @Provides
     fun PostRepository(
-        firebaseFunctions: FirebaseFunctions
-    ): PostRepository = PostRepositoryImpl(firebaseFunctions)
+        firebaseFirestore: FirebaseFirestore,
+        firebaseFunctions: FirebaseFunctions,
+        auth: FirebaseAuth,
+        ): PostRepository = PostRepositoryImpl(firebaseFirestore,firebaseFunctions,auth)
     @Singleton
     @Provides
     fun CommentRepository(
-        firebaseFunctions: FirebaseFunctions
-    ): CommentRepository = CommentRepositoryImpl(firebaseFunctions)
+        firebaseFirestore: FirebaseFirestore,
+        firebaseFunctions: FirebaseFunctions,
+        auth: FirebaseAuth,
+        ): CommentRepository = CommentRepositoryImpl(firebaseFirestore,firebaseFunctions,auth)
 }

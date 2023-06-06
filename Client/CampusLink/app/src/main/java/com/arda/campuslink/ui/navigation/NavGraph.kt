@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.arda.campuslink.ui.auth.AuthViewModel
 import com.arda.campuslink.ui.auth.authMainLayout
 import com.arda.campuslink.ui.screens.homescreen.HomeScreen
@@ -26,25 +27,34 @@ fun NavGraph(
     coroutineScope: CoroutineScope,
 ) {
     val initialRoute: String
+    var lastRoute: String
+
     if (authViewModel.currentUser != null) {
         initialRoute = NavigationScreen.Home.route
+        lastRoute = NavigationScreen.Home.route
     } else {
         initialRoute = NavigationScreen.Login.route
+        lastRoute = NavigationScreen.Login.route
     }
 
 
-    Log.v(DebugTags.UITag.tag, "Test: " + initialRoute)
     NavHost(
         navController = navController,
         startDestination = initialRoute
     )
     {
+        Log.v(DebugTags.UITag.tag, "TTTT")
         composable(route = NavigationScreen.Login.route)
         {
             authMainLayout(navController = navController)
         }
         composable(route = NavigationScreen.Home.route)
         {
+            Log.v(DebugTags.UITag.tag, "Last Route: " + lastRoute)
+            Log.v(DebugTags.UITag.tag, "Current Route: " + navController.currentBackStackEntry?.destination?.route.toString())
+
+            lastRoute = navController.currentBackStackEntry?.destination?.route.toString()
+            Log.v(DebugTags.UITag.tag, "TTTT")
             HomeScreen(
                 navController = navController,
                 coroutineScope = coroutineScope,

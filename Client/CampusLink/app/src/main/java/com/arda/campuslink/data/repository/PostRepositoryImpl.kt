@@ -1,12 +1,15 @@
 package com.arda.campuslink.data.repository
 
 import android.net.Uri
+import com.arda.campuslink.domain.model.Comment
 import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.domain.model.NewPost
 import com.arda.campuslink.domain.model.User
 import com.arda.campuslink.domain.repository.PostRepository
 import com.arda.mainapp.auth.Resource
 import com.arda.mainapp.auth.utils.await
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.functions.FirebaseFunctions
 import kotlinx.coroutines.CoroutineDispatcher
@@ -20,8 +23,9 @@ import kotlin.collections.ArrayList
 class PostRepositoryImpl @Inject constructor(
     private val firebaseFirestore: FirebaseFirestore,
     private val firebaseFunctions: FirebaseFunctions,
+    private val auth: FirebaseAuth,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
-) : PostRepository {
+    ) : PostRepository {
     val userPostFeed: ArrayList<FeedPost> = arrayListOf()
     private val postRef = firebaseFirestore.collection("/Post")
     private val userRef = firebaseFirestore.collection("/User")
@@ -63,12 +67,54 @@ class PostRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun interactPost(post: FeedPost): Resource<FeedPost> =
+    override suspend fun likePost(post: FeedPost) : Resource<FeedPost> =
         withContext(
             dispatcher
-        )
-        {
-            TODO("Not yet implemented")
+        ) {
+            return@withContext try {
+                postRef.document(post.postId)
+                    .update("likes", FieldValue.arrayUnion(auth.currentUser!!.uid)).await()
+                postRef.document(post.postId)
+                    .update("dislikes", FieldValue.arrayRemove(auth.currentUser!!.uid)).await()
+
+                Resource.Sucess(post)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Resource.Failure<Exception>(e)
+            }
+        }
+
+    override suspend fun disLikePost(post: FeedPost): Resource<FeedPost> =
+        withContext(
+            dispatcher
+        ) {
+            return@withContext try {
+                postRef.document(post.postId)
+                    .update("dislikes", FieldValue.arrayUnion(auth.currentUser!!.uid)).await()
+                postRef.document(post.postId)
+                    .update("likes", FieldValue.arrayRemove(auth.currentUser!!.uid)).await()
+
+                Resource.Sucess(post)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Resource.Failure<Exception>(e)
+            }
+        }
+
+    override suspend fun resetLikeDislikePost(post: FeedPost): Resource<FeedPost> =
+        withContext(
+            dispatcher
+        ) {
+            return@withContext try {
+                postRef.document(post.postId)
+                    .update("dislikes", FieldValue.arrayRemove(auth.currentUser!!.uid)).await()
+                postRef.document(post.postId)
+                    .update("likes", FieldValue.arrayRemove(auth.currentUser!!.uid)).await()
+                Resource.Sucess(post)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Resource.Failure<Exception>(e)
+            }
         }
 
     override suspend fun removePost(post: FeedPost): Resource<FeedPost> =
@@ -93,7 +139,6 @@ class PostRepositoryImpl @Inject constructor(
             val documentResults = postRef.get().await().documents
             val posts = arrayListOf<FeedPost>()
             documentResults.forEach { x ->
-                val t = x.get("userID").toString()
                 val authorUser = userRef.document("${x.get("userID").toString()}").get().await()
                 val user = User(
                     UID = authorUser.id,
@@ -101,13 +146,17 @@ class PostRepositoryImpl @Inject constructor(
                     jobTitle = authorUser.get("jobTitle").toString(),
                     avatar =  Uri.parse(authorUser.get("avatar").toString()),
                 )
+                val likesArray = arrayListOf<String>()
+                val disLikesArray = arrayListOf<String>()
+                likesArray.addAll(x.get("likes") as Collection<String>)
+                disLikesArray.addAll(x.get("dislikes") as Collection<String>)
                 val feedPost = FeedPost(
                     postId = x.id,
                     user = user,
                     description = x.get("description").toString(),
                     image = null,
-                    likedUsers = ArrayList(authorUser.get("likes").toString().split(",")),
-                    disLikedUsers =  ArrayList(authorUser.get("dislikes").toString().split(",")),
+                    likedUsers = likesArray,
+                    disLikedUsers =  disLikesArray,
                     comments = 0,
                     shares = 0,
                     views = 0,

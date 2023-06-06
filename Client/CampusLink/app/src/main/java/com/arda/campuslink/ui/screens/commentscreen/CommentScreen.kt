@@ -25,13 +25,14 @@ import com.arda.campuslink.ui.screens.homescreen.OnBottomReached
 import com.arda.campuslink.util.DebugTags
 import com.arda.mainapp.auth.Resource
 import androidx.compose.foundation.lazy.items
+import com.arda.campuslink.ui.screens.homescreen.HomeViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
+fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost,commentViewmodel: CommentViewModel = hiltViewModel<CommentViewModel>(),homeViewModel: HomeViewModel) {
 //    val profileViewmodel = hiltViewModel<ProfileViewModel>()
 //    val state by profileViewmodel.uiState.collectAsState()
 //    Log.v(DebugTags.UITag.tag,"Current profile view model= ${profileViewmodel}")
@@ -39,6 +40,8 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
 
         Dialog(
             onDismissRequest = {
+                commentViewmodel.dismissStates()
+
                 openPost.value = false
             },
             properties = DialogProperties(
@@ -47,7 +50,7 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
         ) {
             if (openPost.value)//&& state.currentProfileUser != null)
             {
-                val commentViewmodel = hiltViewModel<CommentViewModel>()
+//                val commentViewmodel = hiltViewModel<CommentViewModel>()
                 val state by commentViewmodel.uiState.collectAsState()
                 commentViewmodel.setPost(feedPost = feedPost)
 
@@ -62,7 +65,7 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
                     }
                 )
                 {
-                    CommentBody(feedPost,commentViewmodel,state)
+                    CommentBody(feedPost,commentViewmodel,state,homeViewModel)
                 }
             }
 
@@ -71,7 +74,7 @@ fun CommentScreen(openPost: MutableState<Boolean>, feedPost: FeedPost) {
 }
 
 @Composable
-fun CommentBody(currentPost: FeedPost, commentViewmodel: CommentViewModel, state: CommentUiState) {
+fun CommentBody(currentPost: FeedPost, commentViewmodel: CommentViewModel, state: CommentUiState,homeViewModel: HomeViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,14 +83,14 @@ fun CommentBody(currentPost: FeedPost, commentViewmodel: CommentViewModel, state
         elevation = 5.dp,
     )
     {
-            CommentSection(currentPost,commentViewmodel,state)
+            CommentSection(currentPost,commentViewmodel,state, homeViewModel = homeViewModel)
     }
 
 
 }
 
 @Composable
-fun CommentSection(currentPost: FeedPost, commentViewmodel: CommentViewModel, state: CommentUiState) {
+fun CommentSection(currentPost: FeedPost, commentViewmodel: CommentViewModel, state: CommentUiState,homeViewModel: HomeViewModel) {
 
 
 
@@ -129,7 +132,8 @@ fun CommentSection(currentPost: FeedPost, commentViewmodel: CommentViewModel, st
                 {
                     FeedItem(
                         feedPost = currentPost,
-                        commentViewModel = commentViewmodel
+                        commentViewModel = commentViewmodel,
+                        homeViewModel = homeViewModel
                     )
                 }
             }
