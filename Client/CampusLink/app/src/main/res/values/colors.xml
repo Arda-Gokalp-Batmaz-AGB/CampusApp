@@ -10,4 +10,29 @@
     <color name="transparent">#00000000</color>
     <color name="bgcolor2">#FFEAF4F4</color>
     <color name="clickcolor">#FF2E5770</color>
+
+
+    <color name="dark_purple">#76818E</color>
+    <color name="light_purple">#fff7ff</color>
+    <color name="bg">#F4F7FD</color>
+    <color name="background">#FFFFFF</color>
+    <color name="pop_up_text">#FAFF7F</color>
+    <color name="pop_up_text_light">#00897B</color>
+    <color name="text">#1E3054</color>
+    <color name="red">#EB5757</color>
+    <color name="blue">#006AF6</color>
+    <color name="card">#F9F9F9</color>
+    <color name="bgcolor">#FF26252E</color>
+    <color name="open_blue">#0097A7</color>
+    <color name="open_red">#CF4D6F</color>
+    <color name="dark_pink">#A36D90</color>
+    <color name="dark_red2">#CC7E85</color>
+    <color name="yellow1">#FFAB00</color>
+    <color name="yellow2">#FFAB00</color>
+    <color name="pop_up_text2">#FFAB50</color>
+    <color name="pop_up_text3">#FBD100</color>
+    <color name="yellow3">#FFFD82</color>
+    <color name="yellow4">#FFFD82</color>
+    <color name="green">#B6D892</color>
+    <color name="darkgreen">#FF018786</color>
 </resources>

@@ -86,4 +86,7 @@
     <string name="email_password_wrong">Email/Password is wrong</string>
     <string name="login_success">Login successfully</string>
     <string name="register_success">Registration successful</string>
+    <string name="profile_open">Swith Profile to Open</string>
+    <string name="profile_visibility">Profile Visibility</string>
+    <string name="profile_private">Swith Profile to Private</string>
 </resources>

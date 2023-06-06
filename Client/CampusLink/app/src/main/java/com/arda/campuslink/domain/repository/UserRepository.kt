@@ -9,5 +9,6 @@ interface UserRepository {
     val currentFirebaseUser : FirebaseUser?
     var currentUser : ExtendedUser?
     suspend fun getDetailedUserInfo(userId : String) : Resource<ExtendedUser>
-    suspend fun getMinimizedUserInfo(userId : String) : Resource<User>
+    suspend fun switchProfileVisibility(extendedUser: ExtendedUser) : Resource<ExtendedUser>
+//    suspend fun getMinimizedUserInfo(userId : String) : Resource<User>
 }

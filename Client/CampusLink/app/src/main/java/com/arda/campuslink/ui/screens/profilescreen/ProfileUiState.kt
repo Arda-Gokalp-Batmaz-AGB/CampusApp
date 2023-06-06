@@ -8,4 +8,9 @@ import com.google.firebase.auth.FirebaseUser
 data class ProfileUiState(
     var currentProfileUser: ExtendedUser? = null,
     val profileFlow: Resource<ExtendedUser>? = null,
-)
+    var editMode : Boolean = false,
+    var enteredEmail : String = "",
+    var enteredUserName : String = "",
+    val isFeedRefreshing : Boolean = false,
+    var signalCompose : Boolean = false,
+    )

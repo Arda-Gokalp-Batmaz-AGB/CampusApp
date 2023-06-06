@@ -24,8 +24,12 @@ class LoggedUserUseCase @Inject constructor(
             userRepository.currentFirebaseUser!!.photoUrl!!
         )
     }
-
-    suspend fun getMinimizedUserProfile(userId: String): Resource<User> {
-        return userRepository.getMinimizedUserInfo(userId)
+    suspend fun switchProfileVisibility(extendedUser: ExtendedUser) : Resource<ExtendedUser>
+    {
+        return userRepository.switchProfileVisibility(extendedUser = extendedUser)
     }
+
+//    suspend fun getMinimizedUserProfile(userId: String): Resource<User> {
+//        return userRepository.getMinimizedUserInfo(userId)
+//    }
 }

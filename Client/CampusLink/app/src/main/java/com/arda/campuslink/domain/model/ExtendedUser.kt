@@ -1,11 +1,12 @@
 package com.arda.campuslink.domain.model
 
+import android.net.Uri
+
 data class ExtendedUser(
     val UID : String,
     val userName: String,
     val jobTitle: String,
-    val avatar: Int,
-    val banner: Int,
+    var avatar: Uri?,
     val connections: Array<User>,
-    val followers: Array<User>,
+    var profilePublic : Boolean = true,
 )
