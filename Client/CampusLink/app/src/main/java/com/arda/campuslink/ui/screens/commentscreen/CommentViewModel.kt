@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arda.campuslink.domain.model.Comment
 import com.arda.campuslink.domain.model.FeedPost
+import com.arda.campuslink.domain.model.User
 import com.arda.campuslink.domain.usecase.*
 import com.arda.campuslink.util.DebugTags
 import com.arda.mainapp.auth.Resource
@@ -31,6 +32,9 @@ class CommentViewModel @Inject constructor(
     init {
     }
 
+    fun getAuthenticatedUser(): User {
+        return loggedUserUseCase.getMinProfileOfCurrentUser()
+    }
     fun createNewComment() = viewModelScope.launch {
         _uiState.update {
             it.copy(commentCreateFlow = Resource.Loading)

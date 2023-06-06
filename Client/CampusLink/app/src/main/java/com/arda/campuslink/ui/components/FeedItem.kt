@@ -90,6 +90,7 @@ fun FeedItem(
         PostTopItem(
             feedPost,
             modifier = Modifier.layoutId("post_top_bar"),
+            homeViewModel = homeViewModel
             //  coroutineScope,
             // navController
         )
@@ -112,12 +113,13 @@ fun FeedItem(
 fun PostTopItem(
     feedPost: FeedPost,
     modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel
     //coroutineScope: CoroutineScope,
     //navController: NavController
 ) {
     val openProfile = remember { mutableStateOf(false) }
     if (openProfile.value) {
-        feedPost?.let { ProfileScreen(openProfile, user = feedPost.user) }
+        feedPost?.let { ProfileScreen(openProfile, user = feedPost.user, authenticatedUser = homeViewModel.getAuthenticatedUser()) }
     }
     Row(
         modifier = modifier

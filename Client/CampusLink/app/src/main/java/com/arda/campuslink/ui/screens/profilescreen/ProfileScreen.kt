@@ -44,18 +44,16 @@ import com.arda.mainapp.auth.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.arda.campuslink.R
-import com.arda.campuslink.ui.components.FeedItem
-import com.arda.campuslink.ui.screens.homescreen.OnBottomReached
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ProfileScreen(openProfile : MutableState<Boolean>, user: User) {
+fun ProfileScreen(openProfile: MutableState<Boolean>, user: User, authenticatedUser: User) {
     val profileViewmodel = hiltViewModel<ProfileViewModel>()
     val state by profileViewmodel.uiState.collectAsState()
-    Log.v(DebugTags.UITag.tag,"Current profile view model= ${profileViewmodel}")
+    Log.v(DebugTags.UITag.tag, "Current profile view model= ${profileViewmodel}")
 //    val openDialog = remember { mutableStateOf(true) }
     AnimatedVisibility(visible = openProfile.value, enter = fadeIn(), exit = fadeOut()) {
 
@@ -69,7 +67,7 @@ fun ProfileScreen(openProfile : MutableState<Boolean>, user: User) {
         ) {
             LaunchedEffect(key1 = user.UID)
             {
-                Log.v(DebugTags.UITag.tag,"New Profile come")
+                Log.v(DebugTags.UITag.tag, "New Profile come")
 
                 profileViewmodel.getUserProfile(user)
             }
@@ -99,7 +97,11 @@ fun ProfileScreen(openProfile : MutableState<Boolean>, user: User) {
                     },
                 )
                 {
-                    profileBody(state,profileViewmodel)
+                    if (state!!.currentProfileUser!!.profilePublic || state!!.currentProfileUser!!.UID == authenticatedUser.UID) {
+                        profileBody(state, profileViewmodel)
+                    } else {
+                        profilePrivate(state)
+                    }
                 }
             }
 
@@ -108,8 +110,12 @@ fun ProfileScreen(openProfile : MutableState<Boolean>, user: User) {
 }
 
 @Composable
-fun profileBody(state: ProfileUiState, profileViewmodel: ProfileViewModel)
-{
+fun profilePrivate(state: ProfileUiState) {
+    Text(text = "Profile is private so you can't access the ${state.currentProfileUser!!.userName} profile")
+}
+
+@Composable
+fun profileBody(state: ProfileUiState, profileViewmodel: ProfileViewModel) {
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isFeedRefreshing)
 
     SwipeRefresh(
@@ -117,9 +123,9 @@ fun profileBody(state: ProfileUiState, profileViewmodel: ProfileViewModel)
         onRefresh = { profileViewmodel.refreshProfile() }) {
         key(state.signalCompose)
         {
-            Log.v(DebugTags.UITag.tag,"PROFILE RECOMPOSED")
+            Log.v(DebugTags.UITag.tag, "PROFILE RECOMPOSED")
 
-            AccountInfo(state,profileViewmodel)
+            AccountInfo(state, profileViewmodel)
         }
 
     }
@@ -127,23 +133,22 @@ fun profileBody(state: ProfileUiState, profileViewmodel: ProfileViewModel)
 }
 
 @Composable
-fun AccountInfo(state: ProfileUiState,model: ProfileViewModel)
-{
+fun AccountInfo(state: ProfileUiState, model: ProfileViewModel) {
 
-    if(state.editMode)
-    {
-        EditUserInfo(state,model)
-    }
-    else
-    {
-        UserProfile(state,model)
+    if (state.editMode) {
+        EditUserInfo(state, model)
+    } else {
+        UserProfile(state, model)
     }
 }
 
 
-
 @Composable
-fun UserProfile(state: ProfileUiState,model : ProfileViewModel,context: Context = LocalContext.current) {
+fun UserProfile(
+    state: ProfileUiState,
+    model: ProfileViewModel,
+    context: Context = LocalContext.current
+) {
 
     var listPrepared by remember {
         mutableStateOf(false)
@@ -152,7 +157,7 @@ fun UserProfile(state: ProfileUiState,model : ProfileViewModel,context: Context 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.Default) {
             optionsList.clear()
-            prepareOptionsData(state,model,context)
+            prepareOptionsData(state, model, context)
             listPrepared = true
         }
     }
@@ -165,7 +170,7 @@ fun UserProfile(state: ProfileUiState,model : ProfileViewModel,context: Context 
         ) {
 
             item {
-                UserDetails(state=state,model = model,context = context)
+                UserDetails(state = state, model = model, context = context)
             }
 
             items(optionsList) { item ->
@@ -177,9 +182,9 @@ fun UserProfile(state: ProfileUiState,model : ProfileViewModel,context: Context 
 }
 
 @Composable
-private fun UserDetails(state: ProfileUiState,model : ProfileViewModel,context: Context) {
+private fun UserDetails(state: ProfileUiState, model: ProfileViewModel, context: Context) {
     val painter = rememberImagePainter(
-        if(state.currentProfileUser?.avatar == null) {
+        if (state.currentProfileUser?.avatar == null) {
             R.drawable.person
         } else {
             state.currentProfileUser!!.avatar
@@ -217,7 +222,7 @@ private fun UserDetails(state: ProfileUiState,model : ProfileViewModel,context: 
 
                 if (userName != null) {
                     Text(
-                        text =  userName,
+                        text = userName,
                         style = TextStyle(
                             fontSize = 22.sp,
                             fontFamily = FontFamily(Font(R.font.sailec_bold, FontWeight.Bold)),
@@ -242,17 +247,17 @@ private fun UserDetails(state: ProfileUiState,model : ProfileViewModel,context: 
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                    Text(
-                        text = "Connections: " + connections.size,
-                        style = TextStyle(
-                            fontSize = 14.sp,
-                            fontFamily = FontFamily(Font(R.font.sailec_regular, FontWeight.Normal)),
-                            color = Color.Gray,
-                            letterSpacing = (0.8).sp
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                Text(
+                    text = "Connections: " + connections.size,
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.sailec_regular, FontWeight.Normal)),
+                        color = Color.Gray,
+                        letterSpacing = (0.8).sp
+                    ),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
 
             IconButton(

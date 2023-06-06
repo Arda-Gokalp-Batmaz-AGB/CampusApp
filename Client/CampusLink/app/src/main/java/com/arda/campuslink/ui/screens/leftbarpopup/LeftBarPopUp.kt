@@ -95,7 +95,7 @@ fun LeftBarPopUp() {
         }
 
         if (openDialog.value) {
-            state.currentMinimizedUser?.let { ProfileScreen(openDialog,user = it) }
+            state.currentMinimizedUser?.let { ProfileScreen(openDialog,user = it, authenticatedUser = state.currentMinimizedUser!!) }
         }
     }
 

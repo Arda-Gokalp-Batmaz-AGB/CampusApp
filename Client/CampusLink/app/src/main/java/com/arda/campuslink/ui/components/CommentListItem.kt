@@ -49,7 +49,8 @@ fun CommentListItem(
     )
     {
         ReplyProfileImage(
-            feedComment = feedComment
+            feedComment = feedComment,
+            commentViewModel = commentViewModel
         )
         Card(
             modifier = Modifier
@@ -93,11 +94,12 @@ fun CommentListItem(
 
 @Composable
 fun ReplyProfileImage(
-    feedComment: Comment
+    feedComment: Comment,
+    commentViewModel: CommentViewModel
 ) {
     val openProfile = remember { mutableStateOf(false) }
     if (openProfile.value) {
-        feedComment?.let { ProfileScreen(openProfile, user = feedComment.user) }
+        feedComment?.let { ProfileScreen(openProfile, user = feedComment.user, authenticatedUser = commentViewModel.getAuthenticatedUser()) }
     }
     Image(
         painter = rememberImagePainter(feedComment.user.avatar),

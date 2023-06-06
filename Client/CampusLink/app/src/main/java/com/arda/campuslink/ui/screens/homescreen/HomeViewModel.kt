@@ -5,6 +5,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arda.campuslink.domain.model.FeedPost
+import com.arda.campuslink.domain.model.User
 import com.arda.campuslink.domain.usecase.LoggedUserUseCase
 import com.arda.campuslink.domain.usecase.UserInteractionUseCase
 import com.arda.campuslink.domain.usecase.UserPostFeedUseCase
@@ -39,6 +40,9 @@ class HomeViewModel @Inject constructor(
         _uiState.update {
             it.copy(feedFlow = result)
         }
+    }
+    fun getAuthenticatedUser(): User {
+        return loggedUserUseCase.getMinProfileOfCurrentUser()
     }
     fun updateCurrentFeed(newFeed : ArrayList<FeedPost>)
     {
