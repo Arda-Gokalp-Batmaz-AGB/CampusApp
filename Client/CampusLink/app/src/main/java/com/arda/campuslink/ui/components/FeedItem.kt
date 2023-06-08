@@ -6,12 +6,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.GppBad
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -94,7 +97,7 @@ fun FeedItem(
             //  coroutineScope,
             // navController
         )
-        FollowButton(modifier = Modifier.layoutId("post_follow_button"))
+//        FollowButton(modifier = Modifier.layoutId("post_follow_button"))
         PostTextAndImage(
             feedPost = feedPost,
             modifier = Modifier.layoutId("post_text_and_image")
@@ -174,28 +177,28 @@ fun PostTopItem(
     }
 }
 
-@Composable
-private fun FollowButton(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .padding(end = 8.dp, top = 8.dp)
-            .clickable {
-                //To-DO Follow
-            },
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            Icons.Filled.Add,
-            contentDescription = "",
-            tint = Blue
-        )
-        Text(
-            text = LangStringUtil.getLangString(R.string.follow),
-            color = Blue,
-            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold)
-        )
-    }
-}
+//@Composable
+//private fun FollowButton(modifier: Modifier = Modifier) {
+//    Row(
+//        modifier = modifier
+//            .padding(end = 8.dp, top = 8.dp)
+//            .clickable {
+//                //To-DO Follow
+//            },
+//        verticalAlignment = Alignment.CenterVertically,
+//    ) {
+//        Icon(
+//            Icons.Filled.Add,
+//            contentDescription = "",
+//            tint = Blue
+//        )
+//        Text(
+//            text = LangStringUtil.getLangString(R.string.follow),
+//            color = Blue,
+//            style = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Bold)
+//        )
+//    }
+//}
 
 @Composable
 fun PostTextAndImage(modifier: Modifier = Modifier, feedPost: FeedPost) {
@@ -237,6 +240,7 @@ fun PostOptions(
 
             ),
             feedPost = feedPost,
+            homeViewModel
         )
 
         Row {
@@ -307,7 +311,8 @@ private fun PostItem(title: String, icon: ImageVector, triggerFunc: () -> Unit) 
 fun postLikesReactions(
     modifier: Modifier = Modifier,
     icons: List<ImageVector>,
-    feedPost: FeedPost
+    feedPost: FeedPost,
+    model : HomeViewModel
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -344,6 +349,29 @@ fun postLikesReactions(
                 )
             )
         }
+        if(feedPost.user.UID == model.getAuthenticatedUser().UID)
+            IconButton(
+                modifier = Modifier
+                    .weight(weight = 1f, fill = false),
+                onClick = {
+                    model.removePost(post = feedPost)
+                }) {
+
+                Column(
+                    modifier = Modifier.wrapContentSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clip(CircleShape),
+                        imageVector = Icons.Outlined.GppBad,
+                        contentDescription = "Edit Details",
+                        tint = Color.Red
+                    )
+                }
+            }
     }
 }
 fun getLikesOrCommentsString(numberOfLikesOrSharings: Int): String {

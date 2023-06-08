@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -44,6 +45,7 @@ import com.arda.mainapp.auth.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import com.arda.campuslink.R
+import com.arda.campuslink.ui.components.FeedItem
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
@@ -93,7 +95,7 @@ fun ProfileScreen(openProfile: MutableState<Boolean>, user: User, authenticatedU
                     modifier = Modifier
                         .fillMaxSize(),
                     topBar = {
-                        ProfileTopBar(openProfile, state.currentProfileUser!!)
+//                        ProfileTopBar(openProfile, state.currentProfileUser!!)
                     },
                 )
                 {
@@ -115,7 +117,10 @@ fun profilePrivate(state: ProfileUiState) {
 }
 
 @Composable
-fun profileBody(state: ProfileUiState, profileViewmodel: ProfileViewModel) {
+fun profileBody(
+    state: ProfileUiState,
+    profileViewmodel: ProfileViewModel,
+) {
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing = state.isFeedRefreshing)
 
     SwipeRefresh(
@@ -154,6 +159,7 @@ fun UserProfile(
         mutableStateOf(false)
     }
 
+
     LaunchedEffect(Unit) {
         withContext(Dispatchers.Default) {
             optionsList.clear()
@@ -176,7 +182,26 @@ fun UserProfile(
             items(optionsList) { item ->
                 OptionsItemStyle(item = item)
             }
-
+            item() {
+                Text(text = "Education:")
+                state.currentProfileUser?.education?.let { experienceComponent(state, model, it) }
+            }
+            item() { Text(text = "Experiences:") }
+            items(state.currentProfileUser?.experiences!!.size) { idx ->
+                experienceComponent(
+                    state = state,
+                    model = model,
+                    text = state.currentProfileUser?.experiences!![idx]
+                )
+            }
+            item() { Text(text = "Skills:") }
+            items(state.currentProfileUser?.skills!!.size) { idx ->
+                experienceComponent(
+                    state = state,
+                    model = model,
+                    text = state.currentProfileUser?.skills!![idx]
+                )
+            }
         }
     }
 }
@@ -190,8 +215,8 @@ private fun UserDetails(state: ProfileUiState, model: ProfileViewModel, context:
             state.currentProfileUser!!.avatar
         }
     )
-    var email = model.currentUser!!.email
-    var userName = model.currentUser!!.displayName
+    var jobTitle = state.currentProfileUser!!.jobTitle
+    var userName = state.currentProfileUser!!.userName
     var connections = state.currentProfileUser!!.connections
     Row(
         modifier = Modifier
@@ -234,9 +259,9 @@ private fun UserDetails(state: ProfileUiState, model: ProfileViewModel, context:
 
                 Spacer(modifier = Modifier.height(2.dp))
 
-                if (email != null) {
+                if (jobTitle != null) {
                     Text(
-                        text = email,
+                        text = jobTitle,
                         style = TextStyle(
                             fontSize = 14.sp,
                             fontFamily = FontFamily(Font(R.font.sailec_regular, FontWeight.Normal)),
@@ -259,21 +284,41 @@ private fun UserDetails(state: ProfileUiState, model: ProfileViewModel, context:
                     overflow = TextOverflow.Ellipsis
                 )
             }
-
-            IconButton(
-                modifier = Modifier
-                    .weight(weight = 1f, fill = false),
-                onClick = {
-                    model.openEditMode()
-                }) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    imageVector = Icons.Outlined.Edit,
-                    contentDescription = "Edit Details",
-                    tint = MaterialTheme.colors.primary
-                )
+            if (state.currentProfileUser?.UID == model.authenticatedUser.UID) {
+                IconButton(
+                    modifier = Modifier
+                        .weight(weight = 1f, fill = false),
+                    onClick = {
+                        model.openEditMode()
+                    }) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Outlined.Edit,
+                        contentDescription = "Edit Details",
+                        tint = MaterialTheme.colors.primary
+                    )
+                }
             }
 
         }
     }
+}
+
+
+@Composable
+fun experienceComponent(state: ProfileUiState, model: ProfileViewModel, text: String) {
+    Text(text = text)
+//    if(type == "education")
+//    {
+//        Text(text = "${state.currentProfileUser?.education}")
+//    }
+//    else if(type == "skills")
+//    {
+//        Text(text = "${state.currentProfileUser?.skills}")
+//
+//    }
+//    else if(type == "experience")
+//    {
+//        Text(text = "${state.currentProfileUser?.experiences}")
+//    }
 }

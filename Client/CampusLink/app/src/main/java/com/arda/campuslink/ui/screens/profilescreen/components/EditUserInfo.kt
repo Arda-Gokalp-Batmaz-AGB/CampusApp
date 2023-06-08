@@ -46,6 +46,9 @@ fun EditUserInfo(state: ProfileUiState, model: ProfileViewModel) {
         editTopBar(state,model)
         AccountImage(state,model)
         AccountDisplayName(state,model)
+        AccountEducation(state,model)
+        AccountExperience(state,model)
+        AccountSkills(state,model)
     }
 
 }
@@ -149,13 +152,20 @@ private fun AccountImage(state: ProfileUiState, model: ProfileViewModel) {
         if (state.currentProfileUser?.avatar== null) {
             R.drawable.person
         } else {
-            state.currentProfileUser!!.avatar
+            if(state.enteredPhotoUri == null)
+            {
+                state.currentProfileUser!!.avatar
+            }
+            else
+            {
+                state.enteredPhotoUri
+            }
         }
     )
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        uri?.let { state.currentProfileUser?.avatar = it }
+        uri?.let { model.updateImage( it )}
     }
 
     Column(
@@ -227,63 +237,126 @@ private fun AccountDisplayName(state: ProfileUiState, model: ProfileViewModel) {
         value = state.enteredUserName, onValueChange = { newText ->
             run {
                 if (newText.length <= 25) {
-                    state.enteredUserName = newText
+                    model.updateUserName(newText)
                 }
             }
         })
 
 }
-
-//@Composable
-//private fun AccountEmail(model: ProfileViewModel) {
-//    Row(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(8.dp),
-//        horizontalArrangement = Arrangement.spacedBy(20.dp)
-//    )
-//    {
-//        if (!model.currentUser?.displayName.isNullOrEmpty()) {
-//            Text(text = model.currentUser!!.email!!)
-//        } else {
-//            Text(text = "......")
-//        }
-//        var focused by remember { mutableStateOf(false) }
-//        TextField(
-//            modifier = Modifier
-//                .width(250.dp)
-//                .border(1.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(15.dp))
-//                .onFocusChanged {
-//                    focused = it.isFocused == true
-//                },
-//            colors = TextFieldDefaults.textFieldColors(
-//                textColor = Color.Black,
-//                disabledTextColor = Color.Transparent,
-//                focusedIndicatorColor = Color.Transparent,
-//                unfocusedIndicatorColor = Color.Transparent,
-//                disabledIndicatorColor = Color.Transparent,
-//                errorIndicatorColor = Color.Transparent,
-//                errorCursorColor = Color.Black,
-//                errorLeadingIconColor = Color.Red
-//            ),
-//            shape = RoundedCornerShape(15.dp),
-//            placeholder = { if (!focused) Text(LangStringUtil.getLangString(R.string.email)) },
-//            label = { Text(LangStringUtil.getLangString(R.string.email)) },
-//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-//            leadingIcon = {
-//                Icon(
-//                    Icons.Filled.Badge,
-//                    contentDescription = "Email",
-//                    modifier = Modifier.size(ButtonDefaults.IconSize)
-//                )
-//            },
-//            value = model.enteredEmail, onValueChange = { newText ->
-//                run {
-//                    if (newText.length <= 30) {
-//                        model.enteredEmail = newText
-//                    }
-//                }
-//            })
-//    }
-//
-//}
+@Composable
+private fun AccountEducation(state: ProfileUiState, model: ProfileViewModel) {
+    var focused by remember { mutableStateOf(false) }
+    TextField(
+        modifier = Modifier
+            .width(250.dp)
+            .border(1.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(15.dp))
+            .onFocusChanged {
+                focused = it.isFocused == true
+            },
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.Black,
+            disabledTextColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            errorCursorColor = Color.Black,
+            errorLeadingIconColor = Color.Red
+        ),
+        shape = RoundedCornerShape(15.dp),
+        placeholder = { if (!focused) Text(LangStringUtil.getLangString(R.string.education)) },
+        label = { Text(LangStringUtil.getLangString(R.string.education)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        leadingIcon = {
+            Icon(
+                Icons.Filled.Badge,
+                contentDescription = "education",
+                modifier = Modifier.size(ButtonDefaults.IconSize)
+            )
+        },
+        value = state.enteredEducation, onValueChange = { newText ->
+            run {
+                if (newText.length <= 25) {
+                    model.updateEducation(newText)
+                }
+            }
+        })
+}
+@Composable
+private fun AccountSkills(state: ProfileUiState, model: ProfileViewModel) {
+    var focused by remember { mutableStateOf(false) }
+    TextField(
+        modifier = Modifier
+            .width(250.dp)
+            .border(1.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(15.dp))
+            .onFocusChanged {
+                focused = it.isFocused == true
+            },
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.Black,
+            disabledTextColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            errorCursorColor = Color.Black,
+            errorLeadingIconColor = Color.Red
+        ),
+        shape = RoundedCornerShape(15.dp),
+        placeholder = { if (!focused) Text(LangStringUtil.getLangString(R.string.skills)) },
+        label = { Text(LangStringUtil.getLangString(R.string.skills)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        leadingIcon = {
+            Icon(
+                Icons.Filled.Badge,
+                contentDescription = "education",
+                modifier = Modifier.size(ButtonDefaults.IconSize)
+            )
+        },
+        value = state.enteredSkills, onValueChange = { newText ->
+            run {
+                if (newText.length <= 50) {
+                    model.updateSkills(newText)
+                }
+            }
+        })
+}
+@Composable
+private fun AccountExperience(state: ProfileUiState, model: ProfileViewModel) {
+    var focused by remember { mutableStateOf(false) }
+    TextField(
+        modifier = Modifier
+            .width(250.dp)
+            .border(1.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(15.dp))
+            .onFocusChanged {
+                focused = it.isFocused == true
+            },
+        colors = TextFieldDefaults.textFieldColors(
+            textColor = Color.Black,
+            disabledTextColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            errorCursorColor = Color.Black,
+            errorLeadingIconColor = Color.Red
+        ),
+        shape = RoundedCornerShape(15.dp),
+        placeholder = { if (!focused) Text(LangStringUtil.getLangString(R.string.experiences)) },
+        label = { Text(LangStringUtil.getLangString(R.string.experiences)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        leadingIcon = {
+            Icon(
+                Icons.Filled.Badge,
+                contentDescription = "exp",
+                modifier = Modifier.size(ButtonDefaults.IconSize)
+            )
+        },
+        value = state.enteredExperiences, onValueChange = { newText ->
+            run {
+                if (newText.length <= 100) {
+                    model.updateExperiences(newText)
+                }
+            }
+        })
+}

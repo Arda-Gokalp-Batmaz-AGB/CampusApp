@@ -25,6 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
 import com.arda.campuslink.R
 import com.arda.campuslink.ui.screens.leftbarpopup.LeftBarPopUpViewModel
@@ -33,7 +34,7 @@ import com.arda.campuslink.util.DebugTags
 import com.arda.campuslink.util.LangStringUtil
 
 @Composable
-fun LeftBarPopUp() {
+fun LeftBarPopUp(navController: NavHostController) {
     Surface(
         color = Color.White
     ) {
@@ -44,10 +45,10 @@ fun LeftBarPopUp() {
             Column(
                 modifier = Modifier.padding(16.dp),
             ) {
-
-                state.currentMinimizedUser?.avatar?.let {
+                if(state.currentMinimizedUser?.avatar != null)
+                {
                     Image(
-                        painter = rememberImagePainter(it),
+                        painter = rememberImagePainter(state.currentMinimizedUser?.avatar),
                         modifier = Modifier
                             .size(50.dp)
                             .clip(shape = RoundedCornerShape(25.dp))
@@ -55,10 +56,10 @@ fun LeftBarPopUp() {
                                 openDialog.value = true
                             },
 
-                contentScale = ContentScale.Crop,
-                contentDescription = "",
-                )
-            }
+                        contentScale = ContentScale.Crop,
+                        contentDescription = "",
+                    )
+                }
 
             state.currentMinimizedUser?.userName?.let {
                 Text(

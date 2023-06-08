@@ -20,19 +20,22 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arda.campuslink.App.Companion.context
+import com.arda.campuslink.MainActivity
 import com.arda.campuslink.findActivity
 import com.arda.campuslink.ui.screens.profilescreen.ProfileViewModel
 import com.arda.campuslink.ui.theme.ThemeController
 import com.arda.campuslink.util.LangStringUtil
 import com.arda.campuslink.R
 import com.arda.campuslink.ui.screens.profilescreen.ProfileUiState
+import kotlinx.coroutines.coroutineScope
 
 val optionsList: ArrayList<OptionsData> = ArrayList()
 
 @Composable
 fun OptionsItemStyle(item: OptionsData) {
     var iconColor = MaterialTheme.colors.primary
-    if(item.iconColor != null)
+    if (item.iconColor != null)
         iconColor = item.iconColor
 
     Row(
@@ -106,31 +109,62 @@ fun prepareOptionsData(state: ProfileUiState, model: ProfileViewModel, mContext:
     var privacyIcon = appIcons.LockOpen
     var privacyText = LangStringUtil.getLangString(R.string.profile_open)
 
+    var connectionIcon = appIcons.PersonAdd
+    var connectionText = LangStringUtil.getLangString(R.string.add_connect)
+
     var iconColor = Color.DarkGray
 
     var themeText = LangStringUtil.getLangString(R.string.change_theme_dark)
-    if(ThemeController.themeIsDark)
-    {
+    if (ThemeController.themeIsDark) {
         themeIcon = appIcons.LightMode
         themeText = LangStringUtil.getLangString(R.string.change_theme_light)
         iconColor = Color.Yellow
     }
-    if(!state.currentProfileUser!!.profilePublic)
-    {
+    if (!state.currentProfileUser!!.profilePublic) {
         privacyIcon = appIcons.Lock
         privacyText = LangStringUtil.getLangString(R.string.profile_private)
     }
-    optionsList.add(
-        OptionsData(
-            icon = privacyIcon,
-            iconColor = iconColor,
-            title = LangStringUtil.getLangString(R.string.profile_visibility),
-            subTitle = privacyText,
-            callback = {
-                model.switchProfileVisibility()
-            }
+    val isAlreadyConnected = state.currentProfileUser!!.connections.contains(state.currentProfileUser!!.connections.find { it.UID == model.authenticatedUser.UID })
+    if (isAlreadyConnected) {
+        connectionText = LangStringUtil.getLangString(R.string.remove_connect)
+    }
+    if(model.authenticatedUser.UID != state.currentProfileUser!!.UID)
+    {
+        optionsList.add(
+            OptionsData(
+                icon = connectionIcon,
+                iconColor = iconColor,
+                title = LangStringUtil.getLangString(R.string.connect),
+                subTitle = connectionText,
+                callback = {
+                    if(!isAlreadyConnected)
+                    {
+                        model.connectionRequestToUser()
+                    }
+                    else
+                    {
+                        model.removeConnectionToUser()
+                    }
+                }
+            )
         )
-    )
+    }
+
+    if(model.authenticatedUser.UID == state.currentProfileUser!!.UID)
+    {
+        optionsList.add(
+            OptionsData(
+                icon = privacyIcon,
+                iconColor = iconColor,
+                title = LangStringUtil.getLangString(R.string.profile_visibility),
+                subTitle = privacyText,
+                callback = {
+                    model.switchProfileVisibility()
+                }
+            )
+        )
+    }
+
     optionsList.add(
         OptionsData(
             icon = themeIcon,
@@ -149,18 +183,7 @@ fun prepareOptionsData(state: ProfileUiState, model: ProfileViewModel, mContext:
             title = LangStringUtil.getLangString(R.string.logout),
             subTitle = LangStringUtil.getLangString(R.string.logout_info),
             callback = {
-                model.logout()
-//                PopUpController.showPopUp("sign_out_warning") {
-//                    model.logout()
-//                    mContext.findActivity().finish()
-////                    mContext.startActivity(
-////                        Intent(
-////                            mContext,
-////                            LoginActivity::class.java
-////                        )
-////                    )
-////                    mContext.findActivity().finishAffinity();
-//                }
+                    model.logout()
             }
         )
     )
@@ -169,7 +192,7 @@ fun prepareOptionsData(state: ProfileUiState, model: ProfileViewModel, mContext:
 
 data class OptionsData(
     val icon: ImageVector,
-    val iconColor : Color? = null,
+    val iconColor: Color? = null,
     val title: String,
     val subTitle: String,
     val callback: () -> Unit

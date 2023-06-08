@@ -3,10 +3,12 @@ package com.arda.campuslink.ui.components
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.outlined.GppBad
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -130,6 +133,7 @@ fun CommentItemOptions(
                 Icons.Filled.ThumbUp,
             ),
             feedComment = feedComment,
+            commentViewModel
         )
 
         Row {
@@ -185,7 +189,8 @@ private fun CommentItem(title: String, icon: ImageVector, triggerFunc: () -> Uni
 fun CommentLikesReactions(
     modifier: Modifier = Modifier,
     icons: List<ImageVector>,
-    feedComment: Comment
+    feedComment: Comment,
+    model : CommentViewModel,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -221,6 +226,30 @@ fun CommentLikesReactions(
                     fontSize = 10.sp, fontWeight = FontWeight.Bold
                 )
             )
+        }
+        if(feedComment.user.UID == model.getAuthenticatedUser().UID)
+        IconButton(
+            modifier = Modifier
+                .weight(weight = 1f, fill = false),
+            onClick = {
+                model.removeComment(comment = feedComment)
+            }) {
+
+            Column(
+                modifier = Modifier.wrapContentSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape),
+                    imageVector = Icons.Outlined.GppBad,
+                    contentDescription = "Edit Details",
+                    tint = Color.Red
+                )
+            }
+
         }
     }
 }

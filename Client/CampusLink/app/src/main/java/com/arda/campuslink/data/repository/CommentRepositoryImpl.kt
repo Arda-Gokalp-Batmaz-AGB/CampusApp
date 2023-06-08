@@ -116,9 +116,23 @@ class CommentRepositoryImpl @Inject constructor(
             }
         }
 
-    override suspend fun removeComment(commentID: String): Resource<Comment> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun removeComment(commentID: String): Resource<String> =
+        withContext(
+            dispatcher
+        ) {
+            return@withContext try {
+                var com = commentRef.document(commentID).get().await()
+                var childComments = commentRef.whereEqualTo("parentCommentId",commentID).get().await().documents
+                childComments.forEach { x->
+                    commentRef.document(x.id).delete().await()
+                }
+                commentRef.document(com.id).delete().await()
+                Resource.Sucess(commentID)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Resource.Failure<Exception>(e)
+            }
+        }
 
     override suspend fun getPostComments(post: FeedPost): Resource<ArrayList<Comment>> =
         withContext(

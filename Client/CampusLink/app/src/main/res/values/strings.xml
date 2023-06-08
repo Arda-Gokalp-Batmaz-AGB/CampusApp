@@ -89,4 +89,10 @@
     <string name="profile_open">Swith Profile to Open</string>
     <string name="profile_visibility">Profile Visibility</string>
     <string name="profile_private">Swith Profile to Private</string>
+    <string name="add_connect">Add Connect</string>
+    <string name="connect">Connect</string>
+    <string name="remove_connect">Remove Connection</string>
+    <string name="education">Education</string>
+    <string name="skills">Skills</string>
+    <string name="experiences">Experiences</string>
 </resources>

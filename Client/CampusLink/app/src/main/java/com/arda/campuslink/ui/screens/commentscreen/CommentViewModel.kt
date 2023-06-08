@@ -77,6 +77,24 @@ class CommentViewModel @Inject constructor(
         Log.v(DebugTags.UITag.tag, "Current Comment feed = ${_uiState.value.currentFeed}")
     }
 
+    fun removeComment(comment: Comment) = viewModelScope.launch {
+        val result = userCommentUseCase.removeComment(comment = comment)
+        var isCommentRemoved: Boolean = false
+        val currentFeed = hashMapOf<Comment,ArrayList<Comment>>()
+        currentFeed.putAll(_uiState.value.currentFeed)
+        currentFeed.keys.sortedBy { x -> x.timestamp }
+        isCommentRemoved = currentFeed.keys.removeIf{ it.commentId == comment.commentId }
+        if (isCommentRemoved == false) {
+            currentFeed.values?.let {
+                currentFeed.values.forEach { x ->
+                    isCommentRemoved = x.removeIf{ it.commentId == comment.commentId }
+                }
+            }
+        }
+        _uiState.update {
+            it.copy(currentFeed = currentFeed)
+        }
+    }
     private fun combineCommentAndChildren(commentFeed: ArrayList<Comment>): HashMap<Comment, ArrayList<Comment>> {
         var uniqueCommentFeed = commentFeed.distinctBy { x -> x.commentId }
         val commentBlocks = hashMapOf<Comment, ArrayList<Comment>>()

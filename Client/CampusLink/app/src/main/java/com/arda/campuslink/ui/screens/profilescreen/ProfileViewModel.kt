@@ -1,5 +1,6 @@
 package com.arda.campuslink.ui.screens.profilescreen
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -7,10 +8,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arda.campuslink.MainActivity
 import com.arda.campuslink.domain.model.ExtendedUser
 import com.arda.campuslink.domain.model.User
 import com.arda.campuslink.domain.usecase.AuthenticationUseCase
 import com.arda.campuslink.domain.usecase.LoggedUserUseCase
+import com.arda.campuslink.domain.usecase.UserConnectUseCase
+import com.arda.campuslink.domain.usecase.UserProfileUseCase
 import com.arda.campuslink.ui.auth.AuthUiState
 import com.arda.campuslink.util.DebugTags
 import com.arda.mainapp.auth.Resource
@@ -27,17 +31,22 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val loggedUserUseCase: LoggedUserUseCase,
     private val authUseCase: AuthenticationUseCase,
+    private val userConnectUseCase: UserConnectUseCase,
+    private val userProfileUseCase: UserProfileUseCase
 
 ) : ViewModel(), LifecycleObserver {
     lateinit var authenticatedUser: User
+    lateinit var detailedAuthenticatedUser: User
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
     val currentUser: FirebaseUser?
         get() = authUseCase.getCurrentUser()
+
     init {
         authenticatedUser = loggedUserUseCase.getMinProfileOfCurrentUser()
     }
-    fun getUserProfile(user : User) = viewModelScope.launch {
+
+    fun getUserProfile(user: User) = viewModelScope.launch {
         _uiState.update {
             it.copy(profileFlow = Resource.Loading)
         }
@@ -47,23 +56,45 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateCurrentProfileUser(extendedUser: ExtendedUser)
-    {
+    fun connectionRequestToUser() = viewModelScope.launch {
+        userConnectUseCase.connectUser(_uiState.value.currentProfileUser!!.UID)
+    }
+
+    fun removeConnectionToUser() = viewModelScope.launch {
+//        userConnectUseCase.removeConnectUser(_uiState.value.currentProfileUser!!.UID)
+    }
+
+    fun updateCurrentProfileUser(extendedUser: ExtendedUser) {
         _uiState.update {
             it.copy(currentProfileUser = extendedUser)
         }
     }
+
+    fun editUserProfile(extendedUser: ExtendedUser) = viewModelScope.launch {
+        userProfileUseCase.editUserProfile(extendedUser)
+    }
+
     init {
         resetEnteredValues()
     }
+
     fun openEditMode() {
+        resetEnteredValues()
         _uiState.update {
             it.copy(editMode = true)
         }
     }
+
     fun resetEnteredValues() {
         _uiState.update {
-            it.copy(editMode = false )
+            it.copy(
+                editMode = false,
+                enteredEmail = "",
+                enteredEducation = "",
+                enteredExperiences = "",
+                enteredSkills = "",
+                enteredUserName = ""
+            )
         }
 //        if (!currentUser!!.email.isNullOrEmpty())
 //            enteredEmail = currentUser!!.email.toString()
@@ -76,36 +107,87 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun updateProfile() = viewModelScope.launch {
+        val experiences = arrayListOf<String>()
+        val skills = arrayListOf<String>()
+        experiences.addAll(_uiState.value.enteredExperiences.split(","))
+        skills.addAll(_uiState.value.enteredSkills.split(","))
+        var updatedUserName = _uiState.value.currentProfileUser!!.userName
+        if(_uiState.value.enteredUserName != "")
+            updatedUserName = _uiState.value.enteredUserName
+        val updatedUser = ExtendedUser(
+            UID = _uiState.value.currentProfileUser!!.UID,
+            userName =updatedUserName,
+            jobTitle = _uiState.value.currentProfileUser!!.jobTitle,
+            skills = skills,
+            experiences = experiences,
+            avatar = _uiState.value.enteredPhotoUri,
+            connections = _uiState.value.currentProfileUser!!.connections,
+            profilePublic = _uiState.value.currentProfileUser!!.profilePublic,
+            education = _uiState.value.enteredEducation,
+            )
         _uiState.update {
-            it.copy(editMode = false )
+            it.copy(editMode = false, currentProfileUser = updatedUser)
         }
+        userProfileUseCase.editUserProfile(updatedUser = updatedUser)
 //        val updatedProfile = buildUpdatedProfile()
 //        val result = authService.updateProfile(updatedProfile)
 //        _profileFlow.value = result
 //        Log.v("REPO", "Update REsult: " + _profileFlow.value)
     }
 
-    fun switchProfileVisibility()  = viewModelScope.launch {
+    fun switchProfileVisibility() = viewModelScope.launch {
         val user = _uiState.value.currentProfileUser
         if (user != null) {
             loggedUserUseCase.switchProfileVisibility(user)
 //            user!!.profilePublic = !user.profilePublic
             _uiState.update {
-                it.copy(currentProfileUser = user )
+                it.copy(currentProfileUser = user)
             }
             refreshProfile()
         }
 
     }
-    fun refreshProfile()
+    fun updateUserName(text : String)
     {
+        _uiState.update {
+            it.copy(enteredUserName = text)
+        }
+    }
+    fun updateEducation(text : String)
+    {
+        _uiState.update {
+            it.copy(enteredEducation = text)
+        }
+    }
+    fun updateSkills(text : String)
+    {
+        _uiState.update {
+            it.copy(enteredSkills = text)
+        }
+    }
+    fun updateExperiences(text : String)
+    {
+        _uiState.update {
+            it.copy(enteredExperiences = text)
+        }
+    }
+    fun updateImage(uri : Uri)
+    {
+        _uiState.update {
+            it.copy(enteredPhotoUri = uri)
+        }
+    }
+    fun refreshProfile() {
         _uiState.update {
             it.copy(isFeedRefreshing = false, signalCompose = !it.signalCompose)
         }
-        Log.v(DebugTags.UITag.tag,"Feed Refreshed")
+        Log.v(DebugTags.UITag.tag, "Feed Refreshed")
     }
+
     fun logout() {
         authUseCase.logout()
+        Log.v(DebugTags.UITag.tag, "Logout Suceed!")
+
     }
 
 //    private fun buildUpdatedProfile(): UpdatedUserProfile {

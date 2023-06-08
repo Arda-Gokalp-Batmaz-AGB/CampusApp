@@ -34,7 +34,7 @@ fun MainScreen() {
             if ((navController.currentBackStackEntryAsState().value?.destination?.route.toString()
                         != NavigationScreen.Login.route && authViewmodel.currentUser != null)
             ) {
-                LeftBarPopUp()
+                LeftBarPopUp(navController)
             }
         },
         topBar = {
@@ -71,7 +71,7 @@ fun BottomBar(navController: NavHostController) {
         NavigationScreen.MyNetwork,
         NavigationScreen.Publish,
         NavigationScreen.Notifications,
-        NavigationScreen.JobPostings,
+//        NavigationScreen.JobPostings,
     )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination

@@ -52,7 +52,7 @@ fun ProfileTopBar(openDialog: MutableState<Boolean>,profileUser: ExtendedUser) {
                 contentDescription = "profile drawer icon",
             )
 
-            SearchBar(profileUser.userName)
+//            SearchBarProfile(profileUser.userName)
 
             Icon(
                 Icons.Filled.Message,

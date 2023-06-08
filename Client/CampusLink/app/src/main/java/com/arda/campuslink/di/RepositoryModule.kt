@@ -1,13 +1,7 @@
 package com.arda.campuslink.di
 
-import com.arda.campuslink.data.repository.AuthRepositoryImpl
-import com.arda.campuslink.data.repository.CommentRepositoryImpl
-import com.arda.campuslink.data.repository.PostRepositoryImpl
-import com.arda.campuslink.data.repository.UserRepositoryImpl
-import com.arda.campuslink.domain.repository.AuthRepository
-import com.arda.campuslink.domain.repository.CommentRepository
-import com.arda.campuslink.domain.repository.PostRepository
-import com.arda.campuslink.domain.repository.UserRepository
+import com.arda.campuslink.data.repository.*
+import com.arda.campuslink.domain.repository.*
 import com.arda.campuslink.domain.usecase.AuthenticationUseCase
 import com.arda.campuslink.domain.usecase.LoggedUserUseCase
 import com.google.firebase.auth.FirebaseAuth
@@ -49,4 +43,14 @@ object RepositoryModule {
         firebaseFunctions: FirebaseFunctions,
         auth: FirebaseAuth,
         ): CommentRepository = CommentRepositoryImpl(firebaseFirestore,firebaseFunctions,auth)
+
+    @Singleton
+    @Provides
+    fun SearchRepository(
+        firebaseFirestore: FirebaseFirestore,
+        firebaseFunctions: FirebaseFunctions,
+        auth: FirebaseAuth,
+        userRepositoryImpl: UserRepository,
+        postRepositoryImpl: UserRepository,
+    ): SearchRepository = SearchRepositoryImpl(firebaseFirestore,auth,userRepositoryImpl,postRepositoryImpl)
 }

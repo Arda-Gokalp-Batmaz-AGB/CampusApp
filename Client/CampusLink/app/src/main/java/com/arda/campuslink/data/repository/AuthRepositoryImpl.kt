@@ -1,6 +1,8 @@
 package com.arda.campuslink.data.repository
 
+import android.net.Uri
 import android.util.Log
+import com.arda.campuslink.MainActivity
 import com.arda.campuslink.domain.repository.AuthRepository
 import com.arda.campuslink.util.GoogleOneTapClient
 import com.arda.mainapp.auth.Resource
@@ -77,6 +79,15 @@ class AuthRepositoryImpl @Inject constructor(
         val isEmpty = userRef.whereEqualTo("UID",firebaseUser.uid).get().await().isEmpty
         if(isEmpty)
         {
+            var avatar = firebaseUser.photoUrl
+            if(avatar == null)
+            {
+                avatar = Uri.parse("https://e7.pngegg.com/pngimages/18/809/png-clipart-user-computer-icons-person-icon-cdr-logo-thumbnail.png")
+                var profileUpdates = UserProfileChangeRequest.Builder()
+                    .setPhotoUri(avatar)
+                    .build()
+                currentUser!!.updateProfile(profileUpdates).await()
+            }
             val dbUser = hashMapOf(
 //                "UID" to firebaseUser.uid,
                 "userName" to firebaseUser.displayName,
@@ -93,6 +104,10 @@ class AuthRepositoryImpl @Inject constructor(
     override fun logout() {
         GoogleOneTapClient.getOneTapClient().signOut()
         auth.signOut()
+        Thread.sleep(1200)
+        val activity: MainActivity = MainActivity()
+        activity.finish()
+        java.lang.System.exit(0)
     }
 }
 

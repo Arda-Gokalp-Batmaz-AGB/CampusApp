@@ -17,4 +17,7 @@ class UserCommentUseCase @Inject constructor(
     fun getNewlyAddedCommentsByUser(): ArrayList<Comment> {
         return commentRepository.getNewlyAddedCommentsByUser()
     }
+    suspend fun removeComment(comment: Comment): Resource<String> {
+        return commentRepository.removeComment(commentID = comment.commentId )
+    }
 }

@@ -29,6 +29,8 @@ class PostRepositoryImpl @Inject constructor(
     val userPostFeed: ArrayList<FeedPost> = arrayListOf()
     private val postRef = firebaseFirestore.collection("/Post")
     private val userRef = firebaseFirestore.collection("/User")
+    private val commentRef = firebaseFirestore.collection("/Comment")
+
     override suspend fun createPost(newPost: NewPost): Resource<FeedPost> =
         withContext(
             dispatcher
@@ -122,7 +124,18 @@ class PostRepositoryImpl @Inject constructor(
             dispatcher
         )
         {
-            TODO("Not yet implemented")
+            return@withContext try {
+                var postt = postRef.document(post.postId).get().await()
+                var childComments = commentRef.whereEqualTo("postID",post.postId).get().await().documents
+                childComments.forEach { x->
+                    commentRef.document(x.id).delete().await()
+                }
+                postRef.document(postt.id).delete().await()
+                Resource.Sucess(post)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Resource.Failure<Exception>(e)
+            }
         }
 
     override suspend fun getUserPosts(userID: String): Resource<Array<FeedPost>> =

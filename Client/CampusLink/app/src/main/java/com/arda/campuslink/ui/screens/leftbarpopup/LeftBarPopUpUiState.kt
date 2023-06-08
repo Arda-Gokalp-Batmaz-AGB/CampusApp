@@ -6,4 +6,5 @@ import com.google.firebase.auth.FirebaseUser
 
 data class LeftBarPopUpUiState(
     val currentMinimizedUser: User? = null,
+    val enteredTextParameter : String = "",
 )

@@ -17,11 +17,13 @@ class LoggedUserUseCase @Inject constructor(
     }
 
     fun getMinProfileOfCurrentUser(): User {
+
+        var uri = ""
         return User(
             userRepository.currentFirebaseUser!!.uid,
             userRepository.currentFirebaseUser!!.displayName!!,
             "",
-            userRepository.currentFirebaseUser!!.photoUrl!!
+            userRepository.currentFirebaseUser!!.photoUrl
         )
     }
     suspend fun switchProfileVisibility(extendedUser: ExtendedUser) : Resource<ExtendedUser>

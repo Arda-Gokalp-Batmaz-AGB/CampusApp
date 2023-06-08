@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.arda.campuslink.domain.model.Comment
 import com.arda.campuslink.domain.model.FeedPost
 import com.arda.campuslink.domain.model.User
 import com.arda.campuslink.domain.usecase.LoggedUserUseCase
@@ -43,6 +44,15 @@ class HomeViewModel @Inject constructor(
     }
     fun getAuthenticatedUser(): User {
         return loggedUserUseCase.getMinProfileOfCurrentUser()
+    }
+    fun removePost(post: FeedPost) = viewModelScope.launch {
+        val result = userPostFeedUseCase.removePost(post)
+        val currentFeed = ArrayList<FeedPost>()
+        currentFeed.addAll(_uiState.value.currentFeed)
+        currentFeed.removeIf{ it.postId == post.postId }
+        _uiState.update {
+            it.copy(currentFeed = currentFeed)
+        }
     }
     fun updateCurrentFeed(newFeed : ArrayList<FeedPost>)
     {

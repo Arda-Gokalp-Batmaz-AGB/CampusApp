@@ -24,4 +24,7 @@ class UserPostFeedUseCase @Inject constructor(
     {
 
     }
+    suspend fun removePost(post : FeedPost): Resource<FeedPost> {
+        return postRepository.removePost(post)
+    }
 }
