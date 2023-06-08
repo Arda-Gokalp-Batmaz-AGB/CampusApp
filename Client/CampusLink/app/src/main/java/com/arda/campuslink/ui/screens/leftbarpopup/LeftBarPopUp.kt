@@ -45,10 +45,10 @@ fun LeftBarPopUp(navController: NavHostController) {
             Column(
                 modifier = Modifier.padding(16.dp),
             ) {
-                if(state.currentMinimizedUser?.avatar != null)
+                if(leftBarPopUpViewModel.getFirebaseUser()?.photoUrl != null)
                 {
                     Image(
-                        painter = rememberImagePainter(state.currentMinimizedUser?.avatar),
+                        painter = rememberImagePainter(leftBarPopUpViewModel.getFirebaseUser()?.photoUrl ),
                         modifier = Modifier
                             .size(50.dp)
                             .clip(shape = RoundedCornerShape(25.dp))

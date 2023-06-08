@@ -120,7 +120,7 @@ class ProfileViewModel @Inject constructor(
             jobTitle = _uiState.value.currentProfileUser!!.jobTitle,
             skills = skills,
             experiences = experiences,
-            avatar = _uiState.value.enteredPhotoUri,
+            avatar = _uiState.value.currentProfileUser!!.avatar,
             connections = _uiState.value.currentProfileUser!!.connections,
             profilePublic = _uiState.value.currentProfileUser!!.profilePublic,
             education = _uiState.value.enteredEducation,

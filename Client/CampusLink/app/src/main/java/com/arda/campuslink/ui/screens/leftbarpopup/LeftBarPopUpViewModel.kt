@@ -21,7 +21,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LeftBarPopUpViewModel @Inject constructor(
-    private val loggedUserUseCase: LoggedUserUseCase
+    private val loggedUserUseCase: LoggedUserUseCase,
+    private val authUseCase: AuthenticationUseCase
+
 ) : ViewModel(), LifecycleObserver {
 
     private val _uiState = MutableStateFlow(LeftBarPopUpUiState())
@@ -31,5 +33,9 @@ class LeftBarPopUpViewModel @Inject constructor(
             it.copy(currentMinimizedUser = loggedUserUseCase.getMinProfileOfCurrentUser() )
         }
     }
-
+    val currentUser: FirebaseUser?
+        get() = authUseCase.getCurrentUser()
+    fun getFirebaseUser(): FirebaseUser? {
+        return currentUser
+    }
 }

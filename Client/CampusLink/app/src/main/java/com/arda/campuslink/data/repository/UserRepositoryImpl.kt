@@ -33,7 +33,7 @@ class UserRepositoryImpl @Inject constructor(
     override var currentUser: ExtendedUser? = null
     private val userRef = firebaseFirestore.collection("/User")
     private val connectRef = firebaseFirestore.collection("/connect")
-    private val requestRef = firebaseFirestore.collection("/connectRequest")
+    private val requestRef = firebaseFirestore.collection("/Request")
 
     override suspend fun getDetailedUserInfo(userId: String): Resource<ExtendedUser> = withContext(
         dispatcher
@@ -106,7 +106,7 @@ class UserRepositoryImpl @Inject constructor(
             val temp2 = requestRef.whereEqualTo("receiverId", currentFirebaseUser!!.uid)
                 .whereEqualTo("receiverId", userId).get()
                 .await().documents
-            if (temp.size != 0 && temp2.size != 0) {
+            if (temp.size == 0 && temp2.size == 0) {
                 val request = requestRef.add(dbRequest).await()
             }
             val conUser =

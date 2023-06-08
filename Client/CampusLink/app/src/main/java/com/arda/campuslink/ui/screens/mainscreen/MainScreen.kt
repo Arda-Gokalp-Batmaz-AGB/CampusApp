@@ -68,7 +68,7 @@ fun MainScreen() {
 fun BottomBar(navController: NavHostController) {
     val screens = listOf(
         NavigationScreen.Home,
-        NavigationScreen.MyNetwork,
+//        NavigationScreen.MyNetwork,
         NavigationScreen.Publish,
         NavigationScreen.Notifications,
 //        NavigationScreen.JobPostings,
